@@ -1,0 +1,51 @@
+.Message-content-success{
+    border: 1px solid;
+    height: 88px;
+    min-width: 284px;
+    width:max-content;
+    text-align: center;
+    padding: 31px 12px;
+    background-color: green;
+    color: white;
+    position: absolute;
+    bottom: 30px;
+    right: 0px;
+}
+
+.Message-content-warning{
+    border: 1px solid;
+    height: 88px;
+    min-width: 284px;
+    width:max-content;
+    text-align: center;
+    padding: 31px 12px;
+    background-color: #f02e3e;
+    color: white;
+    position: absolute;
+    bottom: 30px;
+    right: 0px;
+}
+
+.panel-wrap {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 30em;
+    transform: translateY(100%);
+    transition: .5s ease-out;
+  }
+
+.panel{
+    transform: translateX(0%);
+}
+
+.notification-close-icon{
+    float: right;
+    margin-top: -24px;
+    width: 25px;
+}
+
+.notification-close-icon:hover{
+    cursor: pointer;
+}

@@ -1,0 +1,201 @@
+.sidenav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 55px; /* collapsed width */
+  height: 100vh;
+  background: linear-gradient(180deg, #2a5298 0%, #1e3c72 100%);
+  color: #fff;
+  padding: 32px 0 0 0;
+  box-shadow: 2px 0 16px rgba(30, 60, 114, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 120;
+  transition: width 0.3s;
+  overflow-x: hidden;
+  overflow: visible;
+  
+}
+.sidenav {
+  width: 220px;
+  height: calc(100vh - 60px); /* Adjust for Topbar height */
+  background-color: #1f2937;
+  color: white;
+  padding: 20px;
+}
+
+.sidenav:hover {
+  width: 220px; /* expanded width */
+  transition: width 0.3s;
+}
+
+.sidenav h2,
+.sidenav ul,
+.sidenav li,
+.sidenav a {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.sidenav:hover h2,
+.sidenav:hover ul,
+.sidenav:hover li,
+.sidenav:hover a {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidenav h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
+
+.sidenav ul {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+}
+.sidenav li {
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.sidenav a {
+  display: block;
+  color: #e0eaff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 12px 32px;
+  border-radius: 0 24px 24px 0;
+  transition: background 0.2s, color 0.2s, padding-left 0.2s, opacity 0.2s;
+  white-space: nowrap;
+}
+
+.sidenav a:hover,
+.sidenav a.active {
+  background: rgba(255,255,255,0.10);
+  color: #07f1c7;
+    
+}
+
+/* Show only a thin line when collapsed */
+.sidenav::before {
+  content: "";
+  display: block;
+  width: 4px;
+  height: 100vh;
+  background: #11001e;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 2px;
+}
+
+/* Hide the drawer button for this style */
+.sidenav-drawer-btn {
+  display: none !important;
+}
+
+
+.sidenav {
+  width: var(--sidenav-width);
+  /* ...rest of your styles... */
+}
+
+.sidenav:hover {
+  width: var(--sidenav-width-expanded);
+}
+
+.sidenav .nav-text,
+.sidenav .nav-title {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.sidenav:hover .nav-text,
+.sidenav:hover .nav-title {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0;
+  font-size: 1.7rem;
+  transition: margin 0.2s;
+}
+
+.sidenav:hover .nav-icon {
+  margin-right: 12px;
+}
+
+
+/* Always show the arrow */
+.sidenav-arrow {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.sidenav-arrow {
+  position: absolute;
+  top: 10px;
+  right: -18px;
+  background: #e8e2e2;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3e0caa;
+  cursor: pointer;
+  transition: transform 0.3s;
+  z-index: 200;
+  
+}
+
+/* Rotate arrow when expanded */
+.sidenav:hover .sidenav-arrow {
+  transform: rotate(180deg);
+}
+
+.submenu li {
+  padding: 0.3rem 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+
+.submenu {
+  padding-left: 32px;
+  list-style: none;
+}
+
+.admin-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px 16px;
+}
+
+
+.nav-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px 16px;
+}

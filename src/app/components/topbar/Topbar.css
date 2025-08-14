@@ -1,0 +1,22 @@
+.topbar {
+  position: fixed;
+  top: 0;
+  left: var(--sidenav-width);
+  width: calc(100% - var(--sidenav-width));
+  height: 60px;
+  background: #fff;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10), 0 1px 0 #e0e0e0;
+  z-index: 101;
+  transition: left 0.3s, width 0.3s;
+}
+
+/* When sidenav is hovered, expand topbar */
+.sidenav:hover ~ .main-content .topbar {
+  left: var(--sidenav-width-expanded);
+  width: calc(100% - var(--sidenav-width-expanded));
+}

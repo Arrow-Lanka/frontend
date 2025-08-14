@@ -1,0 +1,9 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background: #f8f9fa;
+}
+:root {
+  --sidenav-width: 50px;
+  --sidenav-width-expanded: 220px;
+}
