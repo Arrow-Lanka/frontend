@@ -98,6 +98,8 @@ export const API_URL = {
         GET_SUPPLIER_BY_ID: userManagementBase + "/persons/supplier/{personId}",
         UPDATE_SUPPLIER: userManagementBase + "/persons/supplier/{personId}",
 
+        GET_SUPPLIER_BY_COMPANY: userManagementBase + "/persons/supplier/company/{companyId}",
+
         CREATE_CUSTOMER: userManagementBase + "/persons/customer",
         SEARCH_CUSTOMER: userManagementBase + "/persons/searchCustomer",
         GET_CUSTOMER_BY_ID: userManagementBase + "/persons/customer/{personId}",
@@ -108,7 +110,7 @@ export const API_URL = {
         UPDATE_ITEM: itemManagmentBase + "/item/{itemId}",
         SEARCH_ITEM: itemManagmentBase + "/item/search",
         GET_ITEM_BY_ID: itemManagmentBase + "/item/{itemId}",
-       
+       GET_ALL_ITEM_BY_COMPANY: itemManagmentBase + "/item/all/{companyId}"
 
     },
       item_category: {
@@ -128,6 +130,16 @@ export const API_URL = {
         SEARCH_STOCK_LOCATION: itemManagmentBase + "/stockLocation/search",
         GET_STOCK_LOCATION_BY_ID: itemManagmentBase + "/stockLocation/{stockLocationId}",
        
+       
+    },
+    
+    batch: {
+        CREATE_BATCH: itemManagmentBase + "/batch",
+        UPDATE_BATCH: itemManagmentBase + "/batch/{batchId}",
+        GET_ALL_BATCHES_BY_COMPANY: itemManagmentBase + "/batch/all/{companyId}",
+        SEARCH_BATCH: itemManagmentBase + "/batch/search",
+        GET_BATCH_BY_ID: itemManagmentBase + "/batch/{batchId}",
+
        
     },
     

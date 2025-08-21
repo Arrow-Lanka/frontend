@@ -16,6 +16,7 @@ import Supplier from '../admin/supllier/Supplier.jsx';
 import Customer from '../admin/customer/Customer.jsx';
 import Item from '../admin/itemComponant/Item.jsx';
 import Stock_Location from '../admin/StockLocation/StockLocation.jsx';
+import Batch from '../admin/batch/Batch.jsx'; // <-- Add this import
 
 const Layout = (props) => {
     const [isLoggedIn, setIsLoggedIn] = React.useState(true);
@@ -70,6 +71,14 @@ const Layout = (props) => {
                         element={
                             <PermissionChecker permission={1001}>
                                 <Stock_Location />
+                            </PermissionChecker>
+                        }
+                    />
+                     <Route
+                        path="admin/batch"
+                        element={
+                            <PermissionChecker permission={1001}>
+                                <Batch />
                             </PermissionChecker>
                         }
                     />

@@ -36,18 +36,13 @@ import {
   userManSvg,
   cashierLocSvg,
   resourceSchedulingSvg,
-  configure,
-  shiftAndRotaSvg,
-  rotaSchedulingSvg,
-  pharmacyStoreManagementSvg,
-  stockWatchSvg,
-  hospitalDeciderSvg,
-  logOutButtonSvg,
+stockWatchSvg,
   adminButtonSvg,
-  cashierReportSvg,
+  batchManagementSvg,
   cashierManagementSvg,
   cashierReportSvgOrange,
-  roomCreationSvg
+  stockWatchSvgOrg,
+  departmentSetUpSvgOrg
 } from "./svgIcons";
 
 import maleAvatar from "../../../assets/image/genderAvatar/male-avatar-bg-less.svg";
@@ -486,7 +481,7 @@ const Main = (props) => {
   );
 
 
-    const stockLocationDrawerBtn = (
+  const stockLocationDrawerBtn = (
     <Grid
       container
       style={{ marginTop: "1rem" }}
@@ -501,14 +496,33 @@ const Main = (props) => {
         subTitle={"Stock Location Management"}
         linkPath={!isChangesOccured && "/alt/admin/stock-location"}
         selectButton={"/alt/admin/stock-location"}
-        drawerIcon={roomCreationSvg}
+        drawerIcon={departmentSetUpSvgOrg}
         nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
 
       />
     </Grid>
   );
 
-
+  const batchPageDrawerBtn = (
+    <Grid
+      container
+      style={{ marginTop: "1rem" }}
+      onClick={() => sideTabClick("/alt/admin/batch")}
+    >
+      <DrawerButton
+        id='batchPageDrawerBtn'
+        classes={classes}
+        open={open}
+        active={active}
+        setActive={setActive}
+        subTitle={"Batch Management"}
+        linkPath={!isChangesOccured && "/alt/admin/batch"}
+        selectButton={"/alt/admin/batch"}
+        drawerIcon={stockWatchSvgOrg} // or use a different icon if you want
+        nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
+      />
+    </Grid>
+  );
 
 
 
@@ -719,11 +733,12 @@ const Main = (props) => {
                     {customerPageDrawerBtn}
                   </PermissionChecker>
 
-                   <PermissionChecker
+                  <PermissionChecker
                     permission={1001}
                   >
                     {stockLocationDrawerBtn}
                   </PermissionChecker>
+
 
                 </Collapse>
                 {inventoryPageDrawerMenuBtn}
@@ -732,6 +747,11 @@ const Main = (props) => {
                     permission={1001}
                   >
                     {itemPageDrawerBtn}
+                  </PermissionChecker>
+
+                  
+                  <PermissionChecker permission={1001}>
+                    {batchPageDrawerBtn}
                   </PermissionChecker>
 
                 </Collapse>
