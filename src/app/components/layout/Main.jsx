@@ -36,13 +36,14 @@ import {
   userManSvg,
   cashierLocSvg,
   resourceSchedulingSvg,
-stockWatchSvg,
+  stockWatchSvg,
   adminButtonSvg,
   batchManagementSvg,
   cashierManagementSvg,
   cashierReportSvgOrange,
   stockWatchSvgOrg,
-  departmentSetUpSvgOrg
+  departmentSetUpSvgOrg,
+  grnSvg
 } from "./svgIcons";
 
 import maleAvatar from "../../../assets/image/genderAvatar/male-avatar-bg-less.svg";
@@ -524,6 +525,27 @@ const Main = (props) => {
     </Grid>
   );
 
+  const grnPageDrawerBtn = (
+    <Grid
+      container
+      style={{ marginTop: "1rem" }}
+      onClick={() => sideTabClick("/alt/admin/grn")}
+    >
+      <DrawerButton
+        id='grnPageDrawerBtn'
+        classes={classes}
+        open={open}
+        active={active}
+        setActive={setActive}
+        subTitle={"GRN"}
+        linkPath={!isChangesOccured && "/alt/admin/grn"}
+        selectButton={"/alt/admin/grn"}
+        drawerIcon={grnSvg} // Use an appropriate icon
+        nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
+      />
+    </Grid>
+  );
+
 
 
   const loggedInUserDetail = localStorage.getItem('userDetail');
@@ -749,9 +771,13 @@ const Main = (props) => {
                     {itemPageDrawerBtn}
                   </PermissionChecker>
 
-                  
+
                   <PermissionChecker permission={1001}>
                     {batchPageDrawerBtn}
+                  </PermissionChecker>
+
+                  <PermissionChecker permission={1001}>
+                    {grnPageDrawerBtn}
                   </PermissionChecker>
 
                 </Collapse>

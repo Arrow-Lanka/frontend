@@ -110,7 +110,7 @@ export const API_URL = {
         UPDATE_ITEM: itemManagmentBase + "/item/{itemId}",
         SEARCH_ITEM: itemManagmentBase + "/item/search",
         GET_ITEM_BY_ID: itemManagmentBase + "/item/{itemId}",
-       GET_ALL_ITEM_BY_COMPANY: itemManagmentBase + "/item/all/{companyId}"
+        GET_ALL_ITEM_BY_COMPANY: itemManagmentBase + "/item/all/{companyId}"
 
     },
       item_category: {
@@ -139,6 +139,14 @@ export const API_URL = {
         GET_ALL_BATCHES_BY_COMPANY: itemManagmentBase + "/batch/all/{companyId}",
         SEARCH_BATCH: itemManagmentBase + "/batch/search",
         GET_BATCH_BY_ID: itemManagmentBase + "/batch/{batchId}",
+        GET_ALL_BATCHES_BY_ITEM_AND_COMPANY: itemManagmentBase + "/batch/all/item/{itemId}/{companyId}", 
+    },
+      grn: {
+        CREATE_GRN: itemManagmentBase + "/grn",
+        UPDATE_GRN: itemManagmentBase + "/grn/{grnId}",
+        GET_ALL_GRNS_BY_COMPANY: itemManagmentBase + "/grn/all/{companyId}",
+        SEARCH_GRN: itemManagmentBase + "/grn/search",
+        GET_GRN_BY_ID: itemManagmentBase + "/grn/{grnId}",
 
        
     },

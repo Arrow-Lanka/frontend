@@ -40,6 +40,7 @@ const NewAndEditBatch = ({
   const [itemId, setItemId] = useState("");
   const [batchNumber, setBatchNumber] = useState("");
   const [productionDate, setProductionDate] = useState("");
+  const [purchaseDate, setPurchaseDate] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [supplierId, setSupplierId] = useState("");
   const [remarks, setRemarks] = useState("");
@@ -73,7 +74,7 @@ const NewAndEditBatch = ({
     const successCallback = (response) => {
       if ((response?.status === 200 || response?.status === 201) && response?.data) {
         let tempItemOptions = response?.data?.map((option) => ({
-          id: option?.id,
+          id: option?.itemId,
           name: option?.itemName,
         }));
         setItemOptions(tempItemOptions);
@@ -117,12 +118,14 @@ const NewAndEditBatch = ({
       setBatchNumber(BatchInfo?.batchNumber || "");
       setProductionDate(BatchInfo?.productionDate || "");
       setExpiryDate(BatchInfo?.expiryDate || "");
+      setPurchaseDate(BatchInfo?.purchaseDate || "");
       setSupplierId(BatchInfo?.supplierId || "");
       setRemarks(BatchInfo?.remarks || "");
     } else {
       setItemId("");
       setBatchNumber("");
       setProductionDate("");
+      setPurchaseDate("");
       setExpiryDate("");
       setSupplierId("");
       setRemarks("");
@@ -165,9 +168,11 @@ const NewAndEditBatch = ({
       itemId,
       batchNumber,
       productionDate,
+      purchaseDate,
       expiryDate,
       supplierId,
       remarks,
+      statusId: 1, // Assuming 1 is the default status for active
       companyId: JSON.parse(localStorage.getItem("userDetail")).companyId,
     };
 
@@ -264,6 +269,19 @@ const NewAndEditBatch = ({
                     Batch Number <span style={{ color: "red" }}>*</span>
                   </span>
                 }
+              />
+
+              <TextField
+                size="small"
+                variant="outlined"
+                fullWidth
+                type="date"
+                name="purchaseDate"
+                value={purchaseDate}
+                disabled={isViewMode}
+                onChange={(e) => setPurchaseDate(e.target.value)}
+                label="Purchase Date"
+                InputLabelProps={{ shrink: true }}
               />
 
 

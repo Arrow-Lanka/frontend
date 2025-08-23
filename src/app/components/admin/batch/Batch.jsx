@@ -94,10 +94,10 @@ const Batch = () => {
   // Table columns
   const columnData = [
     { id: "batchNumber", name: "Batch Number" },
-    { id: "itemId", name: "Item ID" },
+    { id: "itemName", name: "Item Name" },
+    { id: "purchaseDate", name: "Purchase Date" },
     { id: "productionDate", name: "Production Date" },
     { id: "expiryDate", name: "Expiry Date" },
-    { id: "supplierId", name: "Supplier ID" },
     { id: "remarks", name: "Remarks" },
     {
       id: "action",
@@ -161,9 +161,9 @@ const Batch = () => {
       pageNo: pageNo,
       pageSize: BatchListPaginationData?.pageSize,
       batchNumber: (!BatchSearchFieldData?.isAdvanceSearch) ? BatchSearchFieldData?.searchValue : "",
-      itemId: "", // Add logic if needed
-      supplierId: "", // Add logic if needed
-      // companyId: JSON.parse(localStorage.getItem("userDetail")).companyId,
+      // itemId: "", // Add logic if needed
+      // supplierId: "", // Add logic if needed
+      companyId: JSON.parse(localStorage.getItem("userDetail")).companyId,
     };
     http_Request(
       {
