@@ -43,6 +43,10 @@ const NewGRN = (props) => {
             stockLocationId: "",
         },
     ]);
+
+    // Error fields
+    const [errorFields, setErrorFields] = useState({});
+
     const [snackText, setSnackText] = useState("");
     const [snackVariant, setSnackVariant] = useState("");
     // Example options, replace with API data if needed
@@ -52,48 +56,50 @@ const NewGRN = (props) => {
     const [batchNoOptions, setBatchNoOptions] = useState({});
 
     // Reset/initialize state on open or mode change
-    useEffect(() => {
-        if (isEditMode || isViewMode) {
-            setGrnNumber(grnInfo?.grnNumber || "");
-            setGrnDate(grnInfo?.grnDate || "");
-            setSupplierName(grnInfo?.supplierName || "");
-            setItems(
-                grnInfo?.items?.length
-                    ? grnInfo.items.map((item) => ({
-                        itemId: item.item?.itemId || "",
-                        quantity: item.quantity || "",
-                        itemCost: item.itemCost || "",
-                        unitPrice: item.unitPrice || "",
-                        batchNo: item.batchNo || "",
-                        stockLocationId: item.stockLocation?.stockLocationId || "",
-                    }))
-                    : [
-                        {
-                            itemId: "",
-                            quantity: "",
-                            itemCost: "",
-                            unitPrice: "",
-                            batchNo: "",
-                            stockLocationId: "",
-                        },
-                    ]
-            );
-        } else {
-            setGrnNumber("");
-            setGrnDate("");
-            setSupplierName("");
-            setItems([
-                {
-                    itemId: "",
-                    quantity: "",
-                    itemCost: "",
-                    unitPrice: "",
-                    batchNo: "",
-                    stockLocationId: "",
-                },
-            ]);
-        }
-    }, [isEditMode, isViewMode, grnInfo, isModal]);
+   useEffect(() => {
+    if (isEditMode || isViewMode) {
+        setGrnNumber(grnInfo?.grnNumber || "");
+        setGrnDate(grnInfo?.grnDate || "");
+        setSupplierName(grnInfo?.supplierName || "");
+        console.log("grnInfo?.grnItemRequestModelList", grnInfo?.grnItemRequestModelList);
+        setItems(
+            grnInfo?.grnItemRequestModelList?.length
+                ? grnInfo.grnItemRequestModelList.map((item) => ({
+                    grnItemId: item.grnItemId || "",
+                    itemId: item.itemId || "",
+                    quantity: item.quantity || "",
+                    itemCost: item.itemCost || "",
+                    unitPrice: item.unitPrice || "",
+                    batchNo: item.batchNo || "",
+                    stockLocationId: item.stockLocation || "",
+                }))
+                : [
+                    {grnItemId: "",
+                        itemId: "",
+                        quantity: "",
+                        itemCost: "",
+                        unitPrice: "",
+                        batchNo: "",
+                        stockLocationId: "",
+                    },
+                ]
+        );
+    } else {
+        setGrnNumber("");
+        setGrnDate("");
+        setSupplierName("");
+        setItems([
+            {
+                itemId: "",
+                quantity: "",
+                itemCost: "",
+                unitPrice: "",
+                batchNo: "",
+                stockLocationId: "",
+            },
+        ]);
+    }
+}, [isEditMode, isViewMode, grnInfo, isModal]);
 
     const handleItemChange = async (index, field, value) => {
         const updated = [...items];
@@ -133,24 +139,57 @@ const NewGRN = (props) => {
     };
 
     const addItem = () => {
-        setItems([
-            ...items,
-            {
-                itemId: "",
-                quantity: "",
-                itemCost: "",
-                unitPrice: "",
-                batchNo: "",
-                stockLocationId: "",
-            },
-        ]);
+        const last = items[items.length - 1];
+        // Only add a new item if the last item is fully filled
+        if (
+            last.itemId &&
+            last.quantity &&
+            last.stockLocationId
+        ) {
+            setItems([
+                ...items,
+                {
+                    itemId: "",
+                    quantity: "",
+                    itemCost: "",
+                    unitPrice: "",
+                    batchNo: "",
+                    stockLocationId: "",
+                },
+            ]);
+        } else {
+            setSnackVariant("error");
+            setSnackText("Please fill all fields before adding a new item.");
+        }
     };
+
+
+    const isLastItemValid = () => {
+        const lastItem = items[items.length - 1];
+
+        if (lastItem.itemId &&
+            lastItem.quantity &&
+            lastItem.stockLocationId) {
+                return true;
+        } else {
+            setSnackVariant("error");
+            setSnackText("Please fill all fields in New Item before saving a GRN.");
+        }
+        
+    };
+
 
     // Fetch dropdown data on mount
     useEffect(() => {
         getItemOptionData();
         getStockLocationOptionData();
     }, []);
+
+    // Reset snackbar
+    const resetSnack = () => {
+        setSnackText();
+        setSnackVariant();
+    };
 
     // Fetch Item options
     const getItemOptionData = () => {
@@ -207,23 +246,83 @@ const NewGRN = (props) => {
     };
 
     const handleSave = () => {
-        // Compose payload and call API here
-        const payload = {
-            grnNumber,
-            grnDate,
-            supplierName,
-            items,
-        };
-        // Example: Call API and handle response
-        setSnackText(isEditMode ? "GRN updated successfully!" : "GRN created successfully!");
-        setSnackVariant("success");
-        setIsRefresh && setIsRefresh((prev) => !prev);
-        closeAction();
-    };
+      
+        let canSave = true;
 
-    const resetSnack = () => {
-        setSnackText("");
-        setSnackVariant("");
+
+        if (!isEditMode) {
+            if (!grnNumber.length) {
+                setErrorFields({ ...errorFields, grnNumber: !grnNumber.length });
+                setSnackVariant("error");
+                setSnackText("GRN Number is Required!");
+                canSave = false;
+            } else if (!grnDate?.length) {
+                setErrorFields({ ...errorFields, grnDate: !grnDate.length });
+                setSnackVariant("error");
+                setSnackText("GRN Date is Required!");
+                canSave = false;
+            }
+        }
+
+        if (!isLastItemValid()) {
+            canSave = false;
+        }
+
+        if (canSave) {
+            const companyId = JSON.parse(localStorage.getItem("userDetail")).companyId;
+            const payload = {
+                grnNumber,
+                grnDate,
+                companyId,
+
+                grnItemRequestModelList: items.map(item => ({
+                        grnItemId: Number(item.grnItemId) || undefined,
+                    itemId: Number(item.itemId),
+                    quantity: Number(item.quantity),
+                    unitPrice: Number(item.unitPrice),
+                    itemCost: Number(item.itemCost),
+                    batchNo: item.batchNo,
+                    stockLocation: Number(item.stockLocationId)
+
+                }))
+
+
+            };
+
+            if (isEditMode) {
+                payload["grnId"] = grnInfo.grnId;
+            }
+
+            http_Request(
+                {
+                    url: isEditMode ? API_URL?.grn?.UPDATE_GRN.replace('{grnId}', grnInfo.grnId) : API_URL?.grn?.CREATE_GRN,
+                    method: isEditMode ? "PUT" : "POST",
+                    bodyData: payload,
+                },
+                function successCallback(response) {
+                    if (response.status === 200 || response.status === 201) {
+                        setSnackVariant("success");
+
+                        setSnackText(`GRN ${grnNumber} is ${isEditMode ? 'Updated' : 'Created'} Successfully...!`);
+
+                        setTimeout(() => {
+                            closeAction();
+                            
+                            setIsRefresh(!isRefresh);
+                          
+                        }, 1000);
+                    }
+                },
+                function errorCallback(error) {
+                    console.log("GRN", error);
+                    setSnackVariant("error");
+                    setSnackText(`GRN ${grnNumber} is ${isEditMode ? 'Updated' : 'Created'} Faild...!`);
+                }
+            );
+        }
+
+
+
     };
 
     return (
@@ -253,10 +352,19 @@ const NewGRN = (props) => {
                                 variant="outlined"
                                 fullWidth
                                 name="grnNumber"
-                                label="GRN Number"
+
                                 value={grnNumber}
                                 disabled={isViewMode}
-                                onChange={(e) => setGrnNumber(e.target.value)}
+                                onChange={(e) => {
+                                    setGrnNumber(e.target.value);
+                                    setErrorFields({ ...errorFields, grnNumber: false });
+                                }}
+                                error={errorFields?.grnNumber}
+                                label={
+                                    <span>
+                                        GRN Number <span style={{ color: "red" }}>*</span>
+                                    </span>
+                                }
                             />
 
                         </Stack>
@@ -270,10 +378,19 @@ const NewGRN = (props) => {
                                 fullWidth
                                 type="date"
                                 name="grnDate"
-                                label="GRN Date"
+
                                 value={grnDate}
                                 disabled={isViewMode}
-                                onChange={(e) => setGrnDate(e.target.value)}
+                                onChange={(e) => {
+                                    setGrnDate(e.target.value);
+                                    setErrorFields({ ...errorFields, grnDate: false });
+                                }}
+                                error={errorFields?.grnDate}
+                                label={
+                                    <span>
+                                        GRN Date <span style={{ color: "red" }}>*</span>
+                                    </span>
+                                }
                                 InputLabelProps={{ shrink: true }}
                             />
                         </Stack>
@@ -323,7 +440,8 @@ const NewGRN = (props) => {
                                                 options={batchNoOptions[idx] || []}
                                                 getOptionLabel={(option) => option.name || ""}
                                                 value={
-                                                    (batchNoOptions[idx] || []).find(opt => opt.id === item.batchNo) || null
+                                                    (batchNoOptions[idx] || []).find(opt => opt.id === item.batchNo) || 
+                                                    (item.batchNo ? { id: item.batchNo, name: item.batchNo } : null)
                                                 }
                                                 onChange={(_, newValue) => handleItemChange(idx, "batchNo", newValue ? newValue.id : "")}
                                                 disabled={isViewMode || !item.itemId}
@@ -388,7 +506,8 @@ const NewGRN = (props) => {
                                     </Grid>
                                 ))}
                                 {!isViewMode && (
-                                    <Button onClick={addItem} sx={{ mt: 1 }}>
+                                    <Button onClick={addItem} sx={{ mt: 1 }}
+                                    >
                                         Add Item
                                     </Button>
                                 )}

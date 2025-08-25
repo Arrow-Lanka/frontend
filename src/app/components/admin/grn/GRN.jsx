@@ -93,8 +93,7 @@ const GRN = () => {
     const columnData = [
         { id: "grnNumber", name: "GRN Number" },
         { id: "grnDate", name: "GRN Date" },
-        { id: "supplierName", name: "Supplier Name" },
-        { id: "itemsCount", name: "Items Count" },
+        { id: "itemCount", name: "Items Count" },
         {
             id: "action",
             name: "Action",
@@ -172,7 +171,7 @@ const GRN = () => {
                         ...prev,
                         listData: response?.data?.page?.map(grn => ({
                             ...grn,
-                            itemsCount: grn.items?.length || 0
+                            itemCount: grn.items?.length || 0
                         })),
                         totalElements: response?.data?.totalElements
                     }));
