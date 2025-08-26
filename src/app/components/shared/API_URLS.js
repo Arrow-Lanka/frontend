@@ -150,5 +150,9 @@ export const API_URL = {
 
        
     },
+     stock: {
+        SEARCH_STOCK: itemManagmentBase + "/stock/search",
+
+    },
     
 };

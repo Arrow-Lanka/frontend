@@ -190,7 +190,7 @@ const NewLogin = (props) => {
             { 
                 !isResetPassword && loginSucess.isLoginSucess  && 
                 // <useNavigate to={{pathname: "/exotic"}}/>
-                navigate("/alt")
+                navigate("/alt/dashboard")
             }
            
             { 

@@ -559,7 +559,20 @@ export const adminButtonSvg = (
     <polyline points="8,22 11,25 17,17" fill="none" stroke="#F7941D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
-
+export const stockManagementSvg = (
+ <svg width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Shelves */}
+    <rect x="3" y="4" width="18" height="3" rx="1.5" fill="#F7941D"/>
+    <rect x="3" y="10.5" width="18" height="3" rx="1.5" fill="#F7941D"/>
+    <rect x="3" y="17" width="18" height="3" rx="1.5" fill="#F7941D"/>
+    {/* Boxes on shelves */}
+    <rect x="5" y="5.5" width="3" height="2" rx="0.5" fill="#fff" stroke="#F7941D" strokeWidth="1"/>
+    <rect x="10.5" y="12" width="3" height="2" rx="0.5" fill="#fff" stroke="#F7941D" strokeWidth="1"/>
+    <rect x="16" y="18.5" width="3" height="2" rx="0.5" fill="#fff" stroke="#F7941D" strokeWidth="1"/>
+    {/* Stock tick */}
+    <polyline points="7,20 9,22 12,18" fill="none" stroke="#F7941D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
 
     export const cashierReportSvgOrange = (<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M11.6539 10.0297L8.0894 13.5097L6.21733 11.6818C6.15247 11.6185 6.0651 11.5835 5.97445 11.5846C5.8838 11.5857 5.79729 11.6228 5.73396 11.6876C5.67063 11.7525 5.63566 11.8399 5.63674 11.9305C5.63783 12.0212 5.67488 12.1077 5.73975 12.171L7.85073 14.232C7.91458 14.2943 8.00027 14.3292 8.0895 14.3292C8.17873 14.3292 8.26442 14.2943 8.32827 14.232L12.1314 10.5189C12.1963 10.4556 12.2334 10.3691 12.2344 10.2784C12.2355 10.1878 12.2006 10.1004 12.1372 10.0355C12.0739 9.97066 11.9874 9.9336 11.8967 9.93252C11.8061 9.93143 11.7187 9.9664 11.6539 10.0297Z" fill="#F7941D"/>

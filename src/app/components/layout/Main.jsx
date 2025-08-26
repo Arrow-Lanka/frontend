@@ -43,7 +43,8 @@ import {
   cashierReportSvgOrange,
   stockWatchSvgOrg,
   departmentSetUpSvgOrg,
-  grnSvg
+  grnSvg,
+  stockManagementSvg
 } from "./svgIcons";
 
 import maleAvatar from "../../../assets/image/genderAvatar/male-avatar-bg-less.svg";
@@ -537,10 +538,31 @@ const Main = (props) => {
         open={open}
         active={active}
         setActive={setActive}
-        subTitle={"GRN"}
+        subTitle={"GRN Management"}
         linkPath={!isChangesOccured && "/alt/admin/grn"}
         selectButton={"/alt/admin/grn"}
         drawerIcon={grnSvg} // Use an appropriate icon
+        nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
+      />
+    </Grid>
+  );
+
+  const stockPageDrawerBtn = (
+    <Grid
+      container
+      style={{ marginTop: "1rem" }}
+      onClick={() => sideTabClick("/alt/admin/stock")}
+    >
+      <DrawerButton
+        id='stockPageDrawerBtn'
+        classes={classes}
+        open={open}
+        active={active}
+        setActive={setActive}
+        subTitle={"Stock Management"}
+        linkPath={!isChangesOccured && "/alt/admin/stock"}
+        selectButton={"/alt/admin/stock"}
+        drawerIcon={stockManagementSvg} // Use an appropriate icon
         nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
       />
     </Grid>
@@ -778,6 +800,10 @@ const Main = (props) => {
 
                   <PermissionChecker permission={1001}>
                     {grnPageDrawerBtn}
+                  </PermissionChecker>
+
+                   <PermissionChecker permission={1001}>
+                    {stockPageDrawerBtn}
                   </PermissionChecker>
 
                 </Collapse>

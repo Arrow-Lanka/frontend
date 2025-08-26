@@ -13,40 +13,43 @@ import SearchComponent from '../../common/material/SearchComponent';
 import Snackbar from '../../common/Snackbar';
 import ConfirmationModal from "../../common/ConfirmationModal";
 
+// sub components
+// You can create NewAndEditStock modal similar to NewAndEditStockLocation
+// import NewAndEditStock from "./modals/NewAndEditStock";
+
+//BackEnd
+import { API_URL } from "../../shared/API_URLS";
+import { http_Request } from "../../shared/HTTP_Request";
+
 // styles
 import { FormCommonStyles } from "../../../../assets/styles/FormCommonStyle";
 
 // icons
+import editIcon from '../../../../assets/image/icons/editIcon.png'
 import viewIcon from "../../../../assets/image/icons/viewAction.svg";
-import editIcon from '../../../../assets/image/icons/editIcon.png';
 import deleteIcon from "../../../../assets/image/icons/ehr-delete.svg";
 
-// Backend
-import { API_URL } from "../../shared/API_URLS";
-import { http_Request } from "../../shared/HTTP_Request";
-
-// sub components
-import NewGRN from "./modals/NewGRN";
-
-const GRN = () => {
+const Stock = () => {
     const commonClasses = FormCommonStyles();
     const classes = useStyles();
 
-    const [isNewGRNModal, setIsNewGRNModal] = useState(false);
-    const [GRNSearchFieldData, setGRNSearchFieldData] = useState({
+    const [isNewAndUpdateItemModal, setIsNewAndUpdateItemModal] = useState(false);
+    const [ItemSearchFieldData, setItemSearchFieldData] = useState({
         isAdvanceSearch: false,
         advancedSearchOptions: [
-            { id: "grnNumber", name: "GRN Number" },
-            { id: "supplierName", name: "Supplier Name" }
+    
+            { id: "batchNo", name: "Batch No" },
+            { id: "stockLocation", name: "Stock Location" },
         ],
         selectedSearchOption: "",
         searchValue: "",
     });
     const [isEditMode, setIsEditMode] = useState(false);
     const [isViewMode, setIsViewMode] = useState(false);
+    const [isSaveAsNew, setIsSaveAsNew] = useState(true);
     const [pageNo, setPageNo] = useState(1);
-    const [clickedGRN, setClickedGRN] = useState({});
-    const [GRNListPaginationData, setGRNListPagination] = useState({
+    const [clickedItem, setClickedItem] = useState({});
+    const [ItemListPaginationData, setItemListPagination] = useState({
         listData: [],
         pageNo: 1,
         pageSize: 10,
@@ -56,8 +59,8 @@ const GRN = () => {
     const [snackText, setSnackText] = useState("");
     const [snackVariant, setSnackVariant] = useState("");
     const [changesConfirmationModal, setChangesConfirmationModal] = useState(false);
-    const [isModalSucceed, setIsModalSucceed] = useState(false);
-    const [inactiveGRNId, setInactiveGRNId] = useState(null);
+    const [isModalSucceed, setIsModalSucceed] = React.useState(false);
+    const [inactiveItemId, setInactiveItemId] = useState(null);
     const [isRefresh, setIsRefresh] = useState(false);
 
     const resetSnack = () => {
@@ -67,126 +70,164 @@ const GRN = () => {
 
     // Search handlers
     const handleAdvanceSearch = (isChecked) => {
-        setGRNSearchFieldData(prev => ({
+        setItemSearchFieldData(prev => ({
             ...prev,
             isAdvanceSearch: isChecked,
             searchValue: ''
-        }));
-    };
-
-    const handleDropDownSelectGRN = (event) => {
-        setGRNSearchFieldData(prev => ({
+        }))
+    }
+    const handleDropDownSelectItem = (event) => {
+        setItemSearchFieldData(prev => ({
             ...prev,
             selectedSearchOption: event.target?.value || '',
             searchValue: ''
-        }));
-    };
-
-    const handleGRNSearchValue = (event) => {
-        setGRNSearchFieldData(prev => ({
+        }))
+    }
+    const handleItemSearchValue = (event) => {
+        setItemSearchFieldData(prev => ({
             ...prev,
             searchValue: event.target?.value || ''
-        }));
-    };
+        }))
+    }
 
     // Table columns
     const columnData = [
-        { id: "grnNumber", name: "GRN Number" },
-        { id: "grnDate", name: "GRN Date" },
-        { id: "itemCount", name: "Items Count" },
+        {
+            id: "itemName",
+            name: "Item Name",
+
+        },
+        {
+            id: "stockLocationName",
+            name: "Stock Location",
+
+        },
+        {
+            id: "batchNo",
+            name: "Batch No",
+        },
+        {
+            id: "quantityIn",
+            name: "Quantity In",
+        },
+        {
+            id: "quantityOut",
+            name: "Quantity Out",
+        },
+        {
+            id: "balance",
+            name: "Balance",
+        },
+
         {
             id: "action",
             name: "Action",
             template: {
                 type: "clickableIconBlock",
                 columnAlign: "right",
-                iconClickAction: (event) => { GRNIconClickAction && GRNIconClickAction(event) },
+                iconClickAction: ((event) => { ItemIconclickAction && ItemIconclickAction(event) }),
                 icons: [
-                    { id: "view", name: "View", alt: "view", iconLink: viewIcon, iconClass: commonClasses.pointerClass },
-                    { id: "edit", name: "Edit", alt: "edit", iconLink: editIcon, iconClass: commonClasses.pointerClass },
-                    { id: "delete", name: "Delete", alt: "delete", iconLink: deleteIcon, iconClass: commonClasses.pointerClass }
+                    {
+                        id: "view",
+                        name: "View",
+                        alt: "view",
+                        iconLink: viewIcon,
+                        iconClass: commonClasses.pointerClass
+                    },
+                    {
+                        id: "edit",
+                        name: "Edit",
+                        alt: "edit",
+                        iconLink: editIcon,
+                        iconClass: commonClasses.pointerClass
+                    },
+                    {
+                        id: "delete",
+                        name: "Delete",
+                        alt: "delete",
+                        iconLink: deleteIcon,
+                        iconClass: commonClasses.pointerClass
+                    }
                 ]
-            }
-        }
+            },
+        },
     ];
 
-    const GRNIconClickAction = (event) => {
+    const ItemIconclickAction = (event) => {
         let id = event.target.id.split("_")[1];
         let type = event.target.id.split("_")[0];
-        let clickedData = GRNListPaginationData?.listData?.find(
-            (singleGRN) => singleGRN?.grnId?.toString() === id.toString()
+        let clickeData = ItemListPaginationData?.listData?.filter(
+            (singleItem) => singleItem?.stockId?.toString() === id.toString()
         );
-        setClickedGRN(clickedData);
+        setClickedItem(clickeData[0]);
 
         if (type === "view") {
-            setIsNewGRNModal(true);
+            setIsNewAndUpdateItemModal(true);
             setIsViewMode(true);
         } else if (type === "edit") {
-            setIsNewGRNModal(true);
+            setIsNewAndUpdateItemModal(true);
             setIsEditMode(true);
         } else {
             setChangesConfirmationModal(true);
-            setInactiveGRNId(id);
+            setInactiveItemId(id);
         }
-    };
+    }
 
-    // Inactivate GRN (implement as needed)
-    const handleInActiveGRN = (inactiveGRNId) => {
+    // Inactive Item function (implement your own API endpoint)
+    const handleInActiveItem = (inactiveItemId) => {
         http_Request(
             {
-                url: API_URL.grn.INACTIVE_GRN.replace('{grnId}', inactiveGRNId),
+                url: API_URL.stock.INACTIVE_STOCK.replace('{stockId}', inactiveItemId),
                 method: "PUT",
             },
             function successCallback(response) {
-                if (response.status === 200 || response.status === 201) {
+                if ((response.status === 200 || response.status === 201)) {
                     setSnackVariant("success");
-                    setSnackText("GRN is Inactivated Successfully!");
+                    setSnackText("Stock is Inactivated Successfully...!");
                     setIsRefresh(!isRefresh);
                 }
             },
             function errorCallback(error) {
-                console.log("Error_GRN", error)
+                console.log("Error_Stock", error)
             }
         );
-    };
+    }
 
-    // Fetch GRN list
+    // Fetch stock list
     useEffect(() => {
-        let GRNPayload = {
+        let ItemPayload = {
             pageNo: pageNo,
-            pageSize: GRNListPaginationData?.pageSize,
-            grnNumber: (!GRNSearchFieldData?.isAdvanceSearch) ? GRNSearchFieldData?.searchValue : "",
-            // supplierName: "", // Add logic if needed
+            pageSize: ItemListPaginationData?.pageSize,
+            itemName: (!ItemSearchFieldData?.isAdvanceSearch) ? ItemSearchFieldData?.searchValue : "",
+            batchNo: (ItemSearchFieldData?.isAdvanceSearch && ItemSearchFieldData?.selectedSearchOption == "batchNo") ? ItemSearchFieldData?.searchValue : "",
+            stockLocation: (ItemSearchFieldData?.isAdvanceSearch && ItemSearchFieldData?.selectedSearchOption == "stockLocation") ? ItemSearchFieldData?.searchValue : "",
             companyId: JSON.parse(localStorage.getItem("userDetail")).companyId,
-        };
+        }
         http_Request(
             {
-                url: API_URL.grn.SEARCH_GRN,
+                url: API_URL.stock.SEARCH_STOCK,
                 method: "POST",
-                bodyData: GRNPayload
+                bodyData: ItemPayload
             },
             function successCallback(response) {
-                if (response.status === 200 || response.status === 201) {
-                    setGRNListPagination((prev) => ({
+                if ((response.status === 200 || response.status === 201)) {
+                    setItemListPagination((prev) => ({
                         ...prev,
-                        listData: response?.data?.page?.map(grn => ({
-                            ...grn,
-                            //itemCount: grn.items?.length || 0
-                        })),
+                        listData: response?.data?.page,
                         totalElements: response?.data?.totalElements
-                    }));
+                    }))
                 }
             },
             function errorCallback(error) {
-                console.log("Error_GRN", error)
+                console.log("Error_Stock", error)
             }
         );
     }, [
-        GRNSearchFieldData?.searchValue,
-        GRNSearchFieldData?.isAdvanceSearch,
+        ItemSearchFieldData?.searchValue,
+        ItemSearchFieldData?.isAdvanceSearch,
         pageNo,
         isRefresh
-    ]);
+    ])
 
     return (
         <div className={commonClasses?.dashboardContainer}>
@@ -195,21 +236,25 @@ const GRN = () => {
                 variant={snackVariant}
                 reset={() => { resetSnack() }}
             />
-            {isNewGRNModal && (
-                <NewGRN
-                    isModal={isNewGRNModal}
-                    closeAction={() => { setIsNewGRNModal(false); setIsEditMode(false); setIsViewMode(false); }}
+            {/* 
+            {isNewAndUpdateItemModal &&
+                <NewAndEditStock
+                    isModal={isNewAndUpdateItemModal}
+                    closeAction={() => { setIsNewAndUpdateItemModal(false); setIsEditMode(false); setIsViewMode(false); }}
                     isEditMode={isEditMode}
                     isViewMode={isViewMode}
-                    grnInfo={clickedGRN}
+                    StockInfo={clickedItem}
+                    isSaveAsNew={isSaveAsNew}
+                    setIsSaveAsNew={setIsSaveAsNew}
                     isRefresh={isRefresh}
                     setIsRefresh={setIsRefresh}
                 />
-            )}
+            }
+            */}
             <Card elevation={10}>
                 <CardContent className={commonClasses.mainCardContainer}>
                     <Grid container xs={12} md={12} display="flex" justifyContent='flex-start'>
-                        <Typography className={commonClasses?.resturantTitleWordTypo}>{"GRN List"}</Typography>
+                        <Typography className={commonClasses?.resturantTitleWordTypo}>{"Stock Details"}</Typography>
                     </Grid>
                     <Grid container xs={12} display={"flex"} justifyContent='space-between'>
                         <Grid item xs={10} md={10}></Grid>
@@ -217,12 +262,11 @@ const GRN = () => {
                             <Button
                                 className={classNames(commonClasses.mediumAddBtn, commonClasses.addBtn)}
                                 onClick={() => {
-                                    setIsNewGRNModal(true);
-                                    setIsEditMode(false);
-                                    setIsViewMode(false);
+                                    setIsNewAndUpdateItemModal(true);
+                                    setIsSaveAsNew(true);
                                 }}
                             >
-                                {"Add GRN"}
+                                {"Add Stock"}
                             </Button>
                         </Grid>
                     </Grid>
@@ -237,18 +281,18 @@ const GRN = () => {
                             }}
                         >
                             <SearchComponent
-                                comName='GRN-list-search'
-                                isAdvancedSearch={GRNSearchFieldData?.isAdvanceSearch}
+                                comName='Stock-list-search'
+                                isAdvancedSearch={ItemSearchFieldData?.isAdvanceSearch}
                                 isAdvanceSearchHandler={checked => handleAdvanceSearch(checked)}
                                 toggleSectionGridSize={2}
                                 searchSectionGridSize={10}
-                                dropdownOptionData={GRNSearchFieldData?.advancedSearchOptions}
-                                dropdownSelectValue={GRNSearchFieldData?.selectedSearchOption}
-                                handleDropDownSelect={handleDropDownSelectGRN}
-                                searchValue={GRNSearchFieldData?.searchValue}
-                                handleSearchValue={handleGRNSearchValue}
+                                dropdownOptionData={ItemSearchFieldData?.advancedSearchOptions}
+                                dropdownSelectValue={ItemSearchFieldData?.selectedSearchOption}
+                                handleDropDownSelect={handleDropDownSelectItem}
+                                searchValue={ItemSearchFieldData?.searchValue}
+                                handleSearchValue={handleItemSearchValue}
                                 inputFieldText={
-                                    !GRNSearchFieldData?.isAdvanceSearch ? "Search By GRN Number" : ""
+                                    !ItemSearchFieldData?.isAdvanceSearch ? "Search By Item Name" : ""
                                 }
                             />
                         </Grid>
@@ -257,16 +301,24 @@ const GRN = () => {
                         <TableComponent
                             classes={classes}
                             columns={columnData}
-                            rows={GRNListPaginationData?.listData}
-                            uniqueField="grnId"
-                            pageNo={GRNListPaginationData?.pageNo}
-                            pageDataCount={GRNListPaginationData?.pageSize}
+                            rows={ItemListPaginationData?.listData}
+                            uniqueField="stockId"
+                            pageNo={ItemListPaginationData?.pageNo}
+                            pageDataCount={ItemListPaginationData?.pageSize}
                             isPagination={true}
                             apiHandlePagination={true}
                             handlePagination={(page) => { setPageNo(page) }}
-                            datatotalCount={GRNListPaginationData?.totalElements}
+                            datatotalCount={ItemListPaginationData?.totalElements}
                             paginationClass={commonClasses?.paginationStyle}
                         />
+                    </Grid>
+                    <Grid container xs={12} justifyContent="flex-end" style={{ marginTop: 16 }}>
+                        <Typography variant="h6" style={{ fontWeight: 600 }}>
+                            Total Balance:&nbsp;
+                            {ItemListPaginationData?.listData?.reduce(
+                                (sum, row) => sum + (parseFloat(row.balance) || 0), 0
+                            )}
+                        </Typography>
                     </Grid>
                     <ConfirmationModal
                         classes={classes}
@@ -275,12 +327,12 @@ const GRN = () => {
                             setChangesConfirmationModal(false);
                         }}
                         modalConfirmAction={() => {
-                            handleInActiveGRN(inactiveGRNId);
+                            handleInActiveItem(inactiveItemId);
                             setIsModalSucceed(true);
                             setChangesConfirmationModal(false);
                             setTimeout(() => setIsModalSucceed(false), 50);
                         }}
-                        confirmationModalHeader="Inactive GRN"
+                        confirmationModalHeader="Inactive Stock"
                         confirmationModalContent="Are You Sure You Want to Inactive!"
                         noBtnId="redirectCancel"
                         yesBtnId="redirectPage"
@@ -288,7 +340,7 @@ const GRN = () => {
                 </CardContent>
             </Card>
         </div>
-    );
-};
+    )
+}
 
-export default GRN;
+export default Stock;
