@@ -44,7 +44,8 @@ import {
   stockWatchSvgOrg,
   departmentSetUpSvgOrg,
   grnSvg,
-  stockManagementSvg
+  stockManagementSvg,
+  bomSvg
 } from "./svgIcons";
 
 import maleAvatar from "../../../assets/image/genderAvatar/male-avatar-bg-less.svg";
@@ -569,6 +570,52 @@ const Main = (props) => {
   );
 
 
+    const bomPageDrawerBtn = (
+    <Grid
+      container
+      style={{ marginTop: "1rem" }}
+      onClick={() => sideTabClick("/alt/admin/bom")}
+    >
+      <DrawerButton
+        id='bomPageDrawerBtn'
+        classes={classes}
+        open={open}
+        active={active}
+        setActive={setActive}
+        subTitle={"BOM Management"}
+        linkPath={!isChangesOccured && "/alt/admin/bom"}
+        selectButton={"/alt/admin/bom"}
+        drawerIcon={bomSvg} // Use an appropriate icon
+        nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
+      />
+    </Grid>
+  );
+
+
+      const productionPageDrawerBtn = (
+    <Grid
+      container
+      style={{ marginTop: "1rem" }}
+      onClick={() => sideTabClick("/alt/admin/production")}
+    >
+      <DrawerButton
+        id='productionPageDrawerBtn'
+        classes={classes}
+        open={open}
+        active={active}
+        setActive={setActive}
+        subTitle={"Production Management"}
+        linkPath={!isChangesOccured && "/alt/admin/production"}
+        selectButton={"/alt/admin/production"}
+        drawerIcon={bomSvg} // Use an appropriate icon
+        nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
+      />
+    </Grid>
+  );
+
+
+
+
 
   const loggedInUserDetail = localStorage.getItem('userDetail');
   const isUserAdminPerson = useMemo(() => {
@@ -804,6 +851,14 @@ const Main = (props) => {
 
                    <PermissionChecker permission={1001}>
                     {stockPageDrawerBtn}
+                  </PermissionChecker>
+
+                  <PermissionChecker permission={1001}>
+                    {bomPageDrawerBtn}
+                  </PermissionChecker>
+
+                  <PermissionChecker permission={1001}>
+                    {productionPageDrawerBtn}
                   </PermissionChecker>
 
                 </Collapse>

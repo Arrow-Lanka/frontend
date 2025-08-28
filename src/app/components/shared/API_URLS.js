@@ -153,6 +153,14 @@ export const API_URL = {
      stock: {
         SEARCH_STOCK: itemManagmentBase + "/stock/search",
 
+    }, bom: {
+        CREATE_BOM: itemManagmentBase + "/production/bom",
+        UPDATE_BOM: itemManagmentBase + "/production/bom/{bomId}",
+        GET_ALL_BOMS_BY_COMPANY: itemManagmentBase + "/production/bom/all/{companyId}",
+        SEARCH_BOM: itemManagmentBase + "/production/bom/search",
+        GET_BOM_BY_ID: itemManagmentBase + "/production/bom/{bomId}",
+        GET_BOM_BY_FINISHED_ITEM: itemManagmentBase + "/production/bom/finished/{finishedItemId}",
+
     },
     
 };
