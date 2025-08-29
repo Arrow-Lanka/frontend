@@ -6,16 +6,13 @@ import { http_Request } from "../../shared/HTTP_Request";
 import { useStyles } from "../../../../assets/styles/styles";
 import { FormCommonStyles } from "../../../../assets/styles/FormCommonStyle";
 
-
-
-
 const batchStrategies = [
   { value: "FIFO", label: "FIFO" },
   { value: "LIFO", label: "LIFO" },
   { value: "MANUAL", label: "Manual" }
 ];
 
-const Production = () => {
+const Production = ({ isEditMode = false, productionInfo = {}, closeAction, setIsRefresh }) => {
   const commonClasses = FormCommonStyles();
   const classes = useStyles();
   const [snackText, setSnackText] = useState("");
@@ -118,7 +115,6 @@ const Production = () => {
                   method: "GET"
                 },
                 response => {
-                  console.log("Batches fetched successfully:", response);
                   resolve({
                     ...comp,
                     batches: response?.data || []
@@ -182,9 +178,103 @@ const Production = () => {
   };
 
   const handleSubmit = () => {
-    // Implement your production create logic here
-    setSnackText("Production created successfully!");
-    setSnackVariant("success");
+    let canSave = true;
+
+    // Validate finished item
+    if (!selectedItem) {
+      setSnackVariant("error");
+      setSnackText("Finished Item is required!");
+      canSave = false;
+    } else if (!quantity || Number(quantity) <= 0) {
+      setSnackVariant("error");
+      setSnackText("Finished Quantity is required and must be greater than 0!");
+      canSave = false;
+    } else if (!fromLocation) {
+      setSnackVariant("error");
+      setSnackText("From Location is required!");
+      canSave = false;
+    } else if (!toLocation) {
+      setSnackVariant("error");
+      setSnackText("To Location is required!");
+      canSave = false;
+    } else if (!batchStrategy) {
+      setSnackVariant("error");
+      setSnackText("Batch Strategy is required!");
+      canSave = false;
+    }
+
+    // Manual batch validation
+    if (canSave && batchStrategy === "MANUAL") {
+      for (let i = 0; i < editableComponents.length; i++) {
+        const comp = editableComponents[i];
+        if (!comp.selectedBatchId) {
+          setSnackVariant("error");
+          setSnackText(`Batch No is required for component item in row ${i + 1}`);
+          canSave = false;
+          break;
+        }
+        if (!comp.inputQty || Number(comp.inputQty) <= 0) {
+          setSnackVariant("error");
+          setSnackText(`Quantity is required for component item in row ${i + 1}`);
+          canSave = false;
+          break;
+        }
+      }
+    }
+
+    if (canSave) {
+      const companyId = JSON.parse(localStorage.getItem("userDetail")).companyId;
+      const requestBody = {
+        productionOrderId: isEditMode ? productionInfo.productionOrderId : null,
+        finishedItemId: Number(selectedItem),
+        finishedQty: Number(quantity),
+        fromLocationId: Number(fromLocation),
+        toLocationId: Number(toLocation),
+        batchStrategy: batchStrategy,
+        manualPicks: batchStrategy === "MANUAL"
+          ? editableComponents
+              .filter(comp => comp.selectedBatchId)
+              .map(comp => {
+                const batchObj = (comp.batches || []).find(b => b.batchId === comp.selectedBatchId);
+                return {
+                  itemId: comp.componentItemId,
+                  batchNo: batchObj ? batchObj.batchNumber : "",
+                  qty: Number(comp.inputQty)
+                };
+              })
+          : [],
+        companyId: companyId
+      };
+
+      if (isEditMode && productionInfo.productionId) {
+        requestBody["productionId"] = productionInfo.productionId;
+      }
+
+      http_Request(
+        {
+          url: isEditMode
+            ? API_URL.production.UPDATE_PRODUCTION.replace('{productionId}', productionInfo.productionId)
+            : API_URL.production.SAVE_PRODUCTION,
+          method: isEditMode ? "PUT" : "POST",
+          bodyData: requestBody
+        },
+        function successCallback(response) {
+          if (response.status === 200 || response.status === 201) {
+            setSnackVariant("success");
+            setSnackText(`Production ${isEditMode ? "Updated" : "Created"} Successfully!`);
+            setTimeout(() => {
+              closeAction && closeAction();
+              setIsRefresh && setIsRefresh(prev => !prev);
+            }, 1000);
+          }
+        },
+        function errorCallback(error) {
+          console.log("Production", error);
+          setSnackVariant("error");
+          setSnackText(`Production ${isEditMode ? "Update" : "Creation"} Failed!`);
+        }
+      );
+    }
   };
 
   return (
@@ -215,7 +305,6 @@ const Production = () => {
                 )}
                 isOptionEqualToValue={(option, value) => option.itemId === value.itemId}
               />
-
             </Grid>
             <Grid item xs={12} md={3}>
               <TextField
@@ -349,7 +438,6 @@ const Production = () => {
                           ))}
                         </TextField>
                       </Grid>
-
                     </React.Fragment>
                   ))}
                 </Grid>
@@ -357,7 +445,7 @@ const Production = () => {
             )}
             <Grid item xs={12}>
               <Button variant="contained" color="primary" onClick={handleSubmit}>
-                Create Production
+                {isEditMode ? "Update Production" : "Create Production"}
               </Button>
             </Grid>
           </Grid>

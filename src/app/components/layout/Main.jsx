@@ -45,7 +45,8 @@ import {
   departmentSetUpSvgOrg,
   grnSvg,
   stockManagementSvg,
-  bomSvg
+  bomSvg,
+  productionSvg
 } from "./svgIcons";
 
 import maleAvatar from "../../../assets/image/genderAvatar/male-avatar-bg-less.svg";
@@ -607,7 +608,7 @@ const Main = (props) => {
         subTitle={"Production Management"}
         linkPath={!isChangesOccured && "/alt/admin/production"}
         selectButton={"/alt/admin/production"}
-        drawerIcon={bomSvg} // Use an appropriate icon
+        drawerIcon={productionSvg} // Use an appropriate icon
         nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
       />
     </Grid>

@@ -161,6 +161,14 @@ export const API_URL = {
         GET_BOM_BY_ID: itemManagmentBase + "/production/bom/{bomId}",
         GET_BOM_BY_FINISHED_ITEM: itemManagmentBase + "/production/bom/finished/{finishedItemId}",
 
+    }, production: {
+        SAVE_PRODUCTION: itemManagmentBase + "/production/produce",
+        UPDATE_PRODUCTION: itemManagmentBase + "/production/produce/{produceId}",
+        GET_ALL_BOMS_BY_COMPANY: itemManagmentBase + "/production/bom/all/{companyId}",
+        SEARCH_BOM: itemManagmentBase + "/production/bom/search",
+        GET_BOM_BY_ID: itemManagmentBase + "/production/bom/{bomId}",
+        GET_BOM_BY_FINISHED_ITEM: itemManagmentBase + "/production/bom/finished/{finishedItemId}",
+
     },
     
 };
