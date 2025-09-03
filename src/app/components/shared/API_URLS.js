@@ -163,6 +163,7 @@ export const API_URL = {
 
     }, production: {
         SAVE_PRODUCTION: itemManagmentBase + "/production/produce",
+        SEARCH_PRODUCTION: itemManagmentBase + "/production/search",
         UPDATE_PRODUCTION: itemManagmentBase + "/production/produce/{produceId}",
         GET_ALL_BOMS_BY_COMPANY: itemManagmentBase + "/production/bom/all/{companyId}",
         SEARCH_BOM: itemManagmentBase + "/production/bom/search",
