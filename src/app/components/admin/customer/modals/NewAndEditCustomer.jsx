@@ -171,7 +171,7 @@ const CustomerForm = (props) => {
                 mobile: mobile,
                 addresses: [
                     {
-                        addressId: isEditMode? CustomerInfo?.personId : null,
+                        addressId: isEditMode? CustomerInfo?.addressId : null,
                         address1: addressLine1,
                         address2: addressLine2,
                         address3: addressLine3

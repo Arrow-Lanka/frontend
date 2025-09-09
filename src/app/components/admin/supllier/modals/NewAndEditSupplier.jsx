@@ -164,14 +164,17 @@ const SupplierForm = (props) => {
 
 
         if (canSave) {
+             console.log("supplierInfo", supplierInfo);
             let payload = {
                 titleId: title,
                 firstName: firstName,
                 secondName: secondName,
                 mobile: mobile,
+               
                 addresses: [
                     {
-                        addressId: isEditMode? supplierInfo?.personId : null,
+                        
+                        addressId: isEditMode? supplierInfo?.addressId : null,
                         address1: addressLine1,
                         address2: addressLine2,
                         address3: addressLine3

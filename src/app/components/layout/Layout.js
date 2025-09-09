@@ -14,17 +14,19 @@ import SessionChecker from '../authorization/SessionChecker';
 
 import Supplier from '../admin/supllier/Supplier.jsx';
 import Customer from '../admin/customer/Customer.jsx';
+import Company from '../admin/company/Company.jsx';
 import Item from '../admin/itemComponant/Item.jsx';
 import Stock_Location from '../admin/StockLocation/StockLocation.jsx';
-import Batch from '../admin/batch/Batch.jsx'; 
-import GRN from '../admin/grn/GRN.jsx'; 
+import Batch from '../admin/batch/Batch.jsx';
+import GRN from '../admin/grn/GRN.jsx';
 import Stock from '../admin/stock/Stock.jsx';
-import BOM from '../admin/bom/BOM.jsx'; 
-import Production from '../admin/production/ProductionView.jsx'; 
+import BOM from '../admin/bom/BOM.jsx';
+import Production from '../admin/production/ProductionView.jsx';
+import SalesInvoice from '../admin/sales/SalesInvoice.jsx';
 
 const Layout = (props) => {
     const [isLoggedIn, setIsLoggedIn] = React.useState(true);
-    const [permissionsArray, setPermissionsArray] = React.useState([]); 
+    const [permissionsArray, setPermissionsArray] = React.useState([]);
 
     useEffect(() => {
         setIsLoggedIn(localStorage.getItem("jwtToken") ? true : false);
@@ -47,6 +49,14 @@ const Layout = (props) => {
                 <Routes>
                     <Route path="/dashboard" element={<DashboardComponent />} />
                     <Route
+                        path="admin/company"
+                        element={
+                            <PermissionChecker permission={1001}>
+                                <Company />
+                            </PermissionChecker>
+                        }
+                    />
+                    <Route
                         path="admin/supplier"
                         element={
                             <PermissionChecker permission={1001}>
@@ -54,7 +64,7 @@ const Layout = (props) => {
                             </PermissionChecker>
                         }
                     />
-                     <Route
+                    <Route
                         path="admin/customer"
                         element={
                             <PermissionChecker permission={1001}>
@@ -62,7 +72,7 @@ const Layout = (props) => {
                             </PermissionChecker>
                         }
                     />
-                      <Route
+                    <Route
                         path="admin/item"
                         element={
                             <PermissionChecker permission={1001}>
@@ -70,7 +80,7 @@ const Layout = (props) => {
                             </PermissionChecker>
                         }
                     />
-                     <Route
+                    <Route
                         path="admin/stock-location"
                         element={
                             <PermissionChecker permission={1001}>
@@ -78,7 +88,7 @@ const Layout = (props) => {
                             </PermissionChecker>
                         }
                     />
-                     <Route
+                    <Route
                         path="admin/batch"
                         element={
                             <PermissionChecker permission={1001}>
@@ -86,7 +96,7 @@ const Layout = (props) => {
                             </PermissionChecker>
                         }
                     />
-                     <Route
+                    <Route
                         path="admin/grn"
                         element={
                             <PermissionChecker permission={1001}>
@@ -94,7 +104,7 @@ const Layout = (props) => {
                             </PermissionChecker>
                         }
                     />
-                      <Route
+                    <Route
                         path="admin/stock"
                         element={
                             <PermissionChecker permission={1001}>
@@ -103,7 +113,7 @@ const Layout = (props) => {
                         }
                     />
 
-                     <Route
+                    <Route
                         path="admin/bom"
                         element={
                             <PermissionChecker permission={1001}>
@@ -112,11 +122,20 @@ const Layout = (props) => {
                         }
                     />
 
-                        <Route
+                    <Route
                         path="admin/production"
                         element={
                             <PermissionChecker permission={1001}>
                                 <Production />
+                            </PermissionChecker>
+                        }
+                    />
+
+                    <Route
+                        path="sale/sales-invoice"
+                        element={
+                            <PermissionChecker permission={1001}>
+                                <SalesInvoice />
                             </PermissionChecker>
                         }
                     />

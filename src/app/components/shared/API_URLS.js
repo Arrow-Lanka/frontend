@@ -105,6 +105,12 @@ export const API_URL = {
         GET_CUSTOMER_BY_ID: userManagementBase + "/persons/customer/{personId}",
         UPDATE_CUSTOMER: userManagementBase + "/persons/customer/{personId}",
     },
+   company: {
+     CREATE_COMPANY: userManagementBase + "/company",
+    UPDATE_COMPANY: userManagementBase + "/company/{companyId}",
+    SEARCH_COMPANY: userManagementBase + "/company/search",
+    GET_COMPANY_BY_ID: userManagementBase + "/company/{companyId}",
+},
     item: {
         CREATE_ITEM: itemManagmentBase + "/item",
         UPDATE_ITEM: itemManagmentBase + "/item/{itemId}",
@@ -171,5 +177,11 @@ export const API_URL = {
         GET_BOM_BY_FINISHED_ITEM: itemManagmentBase + "/production/bom/finished/{finishedItemId}",
 
     },
+    // Add to API_URLS.js
+salesInvoice: {
+  CREATE_SALES_INVOICE: userManagementBase + "/sales-invoice",
+  UPDATE_SALES_INVOICE: userManagementBase + "/sales-invoice/{invoiceId}",
+  SEARCH_SALES_INVOICE: userManagementBase + "/sales-invoice/search",
+},
     
 };

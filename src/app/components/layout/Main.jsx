@@ -32,13 +32,13 @@ import {
   openArrow,
   appBarLogOut,
   dashboardSvg,
-  patientSvg,
+  salesSvg,
   userManSvg,
-  cashierLocSvg,
+  riceMillSvg,
   resourceSchedulingSvg,
   stockWatchSvg,
   adminButtonSvg,
-  batchManagementSvg,
+  moneySvg,
   cashierManagementSvg,
   cashierReportSvgOrange,
   stockWatchSvgOrg,
@@ -342,6 +342,23 @@ const Main = (props) => {
 
 
 
+    /**
+  |--------------------------------------------------
+  | Sales Drawer State and functions
+  |--------------------------------------------------
+  */
+  const [salesDrawerStates, dispatchSalesDrawerStates] = React.useReducer((state, action) => {
+    switch (action.type) {
+      case 'closeSalesDrawer':
+        return { isSalesDrawerOpen: false }
+      case 'openSalesDrawer':
+        return { isSalesDrawerOpen: true }
+      default:
+        break;
+    }
+  }, { isSalesDrawerOpen: false })
+
+
   /**
   |--------------------------------------------------
   | Logged In User's Hospitals
@@ -432,6 +449,29 @@ const Main = (props) => {
         linkPath={!isChangesOccured && "/alt/admin/item"}
         selectButton={"/alt/admin/item"}
         drawerIcon={cashierReportSvgOrange}
+        nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
+
+      />
+    </Grid>
+  );
+
+
+  const companyPageDrawerBtn = (
+    <Grid
+      container
+      style={{ marginTop: "1rem" }}
+      onClick={() => sideTabClick("/alt/admin/company")}
+    >
+      <DrawerButton
+        id='companyPageDrawerBtn'
+        classes={classes}
+        open={open}
+        active={active}
+        setActive={setActive}
+        subTitle={"Company Management"}
+        linkPath={!isChangesOccured && "/alt/admin/company"}
+        selectButton={"/alt/admin/company"}
+        drawerIcon={riceMillSvg}
         nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
 
       />
@@ -571,7 +611,7 @@ const Main = (props) => {
   );
 
 
-    const bomPageDrawerBtn = (
+  const bomPageDrawerBtn = (
     <Grid
       container
       style={{ marginTop: "1rem" }}
@@ -593,7 +633,7 @@ const Main = (props) => {
   );
 
 
-      const productionPageDrawerBtn = (
+  const productionPageDrawerBtn = (
     <Grid
       container
       style={{ marginTop: "1rem" }}
@@ -613,6 +653,48 @@ const Main = (props) => {
       />
     </Grid>
   );
+
+
+    const salesPageDrawerBtn = (
+    <DrawerMenuButton
+      id='salesPageDrawerBtn'
+      classes={classes}
+      open={open}
+      isNestedDrawerOpen={salesDrawerStates?.isSalesDrawerOpen}
+      subTitle={"Sales"}
+      drawerIcon={moneySvg}
+      onDrawerButtonClick={
+        () => salesDrawerStates?.isSalesDrawerOpen ?
+          dispatchSalesDrawerStates({ type: "closeSalesDrawer" })
+          :
+          dispatchSalesDrawerStates({ type: "openSalesDrawer" })
+      }
+      mobileOpen={mobileOpen}
+    />
+  )
+
+    const salesInvoicePageDrawerBtn = (
+    <Grid
+      container
+      style={{ marginTop: "1rem" }}
+      onClick={() => sideTabClick("/alt/sale/sales-invoice")}
+    >
+      <DrawerButton
+        id='salesInvoicePageDrawerBtn'
+        classes={classes}
+        open={open}
+        active={active}
+        setActive={setActive}
+        subTitle={"Sales Invoice"}
+        linkPath={!isChangesOccured && "/alt/sale/sales-invoice"}
+        selectButton={"/alt/sale/sales-invoice"}
+        drawerIcon={salesSvg}
+        nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
+
+      />
+    </Grid>
+  );
+
 
 
 
@@ -813,6 +895,13 @@ const Main = (props) => {
                 {adminPageDrawerMenuBtn}
                 <Collapse in={adminDrawerStates?.isAdminDrawerOpen} timeout={"auto"} unmountOnExit>
 
+
+                  <PermissionChecker
+                    permission={1001}
+                  >
+                    {companyPageDrawerBtn}
+                  </PermissionChecker>
+
                   <PermissionChecker
                     permission={1001}
                   >
@@ -850,7 +939,7 @@ const Main = (props) => {
                     {grnPageDrawerBtn}
                   </PermissionChecker>
 
-                   <PermissionChecker permission={1001}>
+                  <PermissionChecker permission={1001}>
                     {stockPageDrawerBtn}
                   </PermissionChecker>
 
@@ -863,6 +952,18 @@ const Main = (props) => {
                   </PermissionChecker>
 
                 </Collapse>
+              </PermissionChecker>
+
+              {salesPageDrawerBtn}
+              <PermissionChecker
+                permission={1000}
+              >
+                <Collapse in={salesDrawerStates?.isSalesDrawerOpen} timeout={"auto"} unmountOnExit>
+                                <PermissionChecker permission={1001}>
+                    {salesInvoicePageDrawerBtn}
+                  </PermissionChecker>
+                </Collapse>
+                
               </PermissionChecker>
 
             </div>
