@@ -245,6 +245,7 @@ const Supplier = () => {
         let SupplierPayload = {
             pageNo: pageNo,
             pageSize : SupplierListPaginationData?.pageSize,
+            companyId: JSON.parse(localStorage.getItem("userDetail")).companyId,
             firstName: (!SupplierSearchFieldData?.isAdvanceSearch) ? SupplierSearchFieldData?.searchValue : "",
             secondName: (SupplierSearchFieldData?.isAdvanceSearch && SupplierSearchFieldData?.selectedSearchOption == "secondName") ? SupplierSearchFieldData?.searchValue : "",
           

@@ -245,6 +245,7 @@ const Customer = () => {
         let CustomerPayload = {
             pageNo: pageNo,
             pageSize : CustomerListPaginationData?.pageSize,
+            companyId: JSON.parse(localStorage.getItem("userDetail")).companyId,
             firstName: (!CustomerSearchFieldData?.isAdvanceSearch) ? CustomerSearchFieldData?.searchValue : "",
             secondName: (CustomerSearchFieldData?.isAdvanceSearch && CustomerSearchFieldData?.selectedSearchOption == "secondName") ? CustomerSearchFieldData?.searchValue : "",
           

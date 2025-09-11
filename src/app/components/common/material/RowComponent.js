@@ -27,16 +27,14 @@ import { template } from 'lodash';
 
 export default function RowComponent(props) {
     let {classes, rowSpecificClass } = props
-    return (
+ return (
         props.columns.map((column, columnIndex) => (
             <TableCell id={(column.columnId ? column.columnId : column.id) + "_" + (props.rowDataIndex + 1)} key={columnIndex + "_" + props.rowDataIndex} className={classNames(classes && classes.tableCell, column.contentClass, rowSpecificClass, column.dynamicColumnClass &&  props.rowData[column.id + "_style"]) } align={column.contentAlign || column.columnAlign} width={column.width}>
                 {column.template ? getTemplate(column.template, props.rowData, [column.id], props.rowDataIndex) : props.rowData[column.id]}
             </TableCell>
         ))
     );
-
-    function getTemplate(templateData, row, columnId, index) {
-        console.log(templateData, row, columnId,'AAAAAAAAAAAAAAAAAA')
+     function getTemplate(templateData, row, columnId, index) {
         if (templateData.type === "AnchorTag") {
             return (
                 <Link style={{ color: "#000" }} to={templateData.redirectLink + row[templateData.redirectId]}>{row[columnId]}</Link>
@@ -52,7 +50,13 @@ export default function RowComponent(props) {
                                     <img
                                         className={classNames(classes && classes.iconStyle, icon.iconClass)}
                                         id={icon.id + "_" + row[props.uniqueField]?.toString()}
-                                        onClick={(event) => { templateData.iconClickAction ? templateData.iconClickAction(event) : props.onClickAction && props.onClickAction(event) }}
+                                        onClick={(event) => {
+                                            if (templateData.iconClickAction) {
+                                                templateData.iconClickAction(event, row, index);
+                                            } else if (props.onClickAction) {
+                                                props.onClickAction(event, row, index);
+                                            }
+                                        }}
                                         src={icon.iconLink}
                                         alt={icon.name}
                                         style={icon.iconStyle}

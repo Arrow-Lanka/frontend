@@ -104,6 +104,8 @@ export const API_URL = {
         SEARCH_CUSTOMER: userManagementBase + "/persons/searchCustomer",
         GET_CUSTOMER_BY_ID: userManagementBase + "/persons/customer/{personId}",
         UPDATE_CUSTOMER: userManagementBase + "/persons/customer/{personId}",
+        GET_CUSTOMER_BY_COMPANY: userManagementBase + "/persons/customer/company/{companyId}",
+
     },
    company: {
      CREATE_COMPANY: userManagementBase + "/company",
@@ -179,9 +181,14 @@ export const API_URL = {
     },
     // Add to API_URLS.js
 salesInvoice: {
-  CREATE_SALES_INVOICE: userManagementBase + "/sales-invoice",
-  UPDATE_SALES_INVOICE: userManagementBase + "/sales-invoice/{invoiceId}",
-  SEARCH_SALES_INVOICE: userManagementBase + "/sales-invoice/search",
+  CREATE_SALES_INVOICE: itemManagmentBase + "/sale/sales-invoice",
+  UPDATE_SALES_INVOICE: itemManagmentBase + "/sale/sales-invoice/{invoiceId}",
+  SEARCH_SALES_INVOICE: itemManagmentBase + "/sale/search",
+},
+
+codeSequence: {
+  GET_GENERATED_NUMBER: itemManagmentBase + "/code_sequence/{codeType}",
+  
 },
     
 };
