@@ -118,7 +118,8 @@ export const API_URL = {
         UPDATE_ITEM: itemManagmentBase + "/item/{itemId}",
         SEARCH_ITEM: itemManagmentBase + "/item/search",
         GET_ITEM_BY_ID: itemManagmentBase + "/item/{itemId}",
-        GET_ALL_ITEM_BY_COMPANY: itemManagmentBase + "/item/all/{companyId}"
+        GET_ALL_ITEM_BY_COMPANY: itemManagmentBase + "/item/all/{companyId}",
+        GET_ALL_BYPRODUCTS: itemManagmentBase + "/item/all/by-product/{companyId}",
 
     },
       item_category: {
@@ -177,6 +178,12 @@ export const API_URL = {
         SEARCH_BOM: itemManagmentBase + "/production/bom/search",
         GET_BOM_BY_ID: itemManagmentBase + "/production/bom/{bomId}",
         GET_BOM_BY_FINISHED_ITEM: itemManagmentBase + "/production/bom/finished/{finishedItemId}",
+
+    }, milling: {
+        SAVE_MILLING: itemManagmentBase + "/production/produce",
+        SEARCH_MILLING: itemManagmentBase + "/production/search",
+        UPDATE_MILLING: itemManagmentBase + "/production/produce/{produceId}",
+
 
     },
     // Add to API_URLS.js

@@ -33,10 +33,10 @@ import {
   appBarLogOut,
   dashboardSvg,
   salesSvg,
-  userManSvg,
+  serviceMasterOrgSvg,
   riceMillSvg,
   resourceSchedulingSvg,
-  stockWatchSvg,
+  wheatMillSvg,
   adminButtonSvg,
   moneySvg,
   cashierManagementSvg,
@@ -46,7 +46,8 @@ import {
   grnSvg,
   stockManagementSvg,
   bomSvg,
-  productionSvg
+  productionSvg,
+  configureOrg
 } from "./svgIcons";
 
 import maleAvatar from "../../../assets/image/genderAvatar/male-avatar-bg-less.svg";
@@ -696,7 +697,26 @@ const Main = (props) => {
   );
 
 
-
+    const millingPageDrawerBtn = (
+    <Grid
+      container
+      style={{ marginTop: "1rem" }}
+      onClick={() => sideTabClick("/alt/admin/milling")}
+    >
+      <DrawerButton
+        id='millingPageDrawerBtn'
+        classes={classes}
+        open={open}
+        active={active}
+        setActive={setActive}
+        subTitle={"Milling"}
+        linkPath={!isChangesOccured && "/alt/admin/milling"}
+        selectButton={"/alt/admin/milling"}
+        drawerIcon={serviceMasterOrgSvg}
+        nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
+      />
+    </Grid>
+  );
 
 
 
@@ -949,6 +969,10 @@ const Main = (props) => {
 
                   <PermissionChecker permission={1001}>
                     {productionPageDrawerBtn}
+                  </PermissionChecker>
+
+                  <PermissionChecker permission={1001}>
+                    {millingPageDrawerBtn}
                   </PermissionChecker>
 
                 </Collapse>
