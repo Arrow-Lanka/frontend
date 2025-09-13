@@ -119,7 +119,7 @@ export const API_URL = {
         SEARCH_ITEM: itemManagmentBase + "/item/search",
         GET_ITEM_BY_ID: itemManagmentBase + "/item/{itemId}",
         GET_ALL_ITEM_BY_COMPANY: itemManagmentBase + "/item/all/{companyId}",
-        GET_ALL_BYPRODUCTS: itemManagmentBase + "/item/all/by-product/{companyId}",
+        GET_ALL_ITEM_BY_CATEGORY_DETAILS: itemManagmentBase + "/item/allByCategory/{companyId}"
 
     },
       item_category: {
