@@ -40,6 +40,7 @@ const MillingProduction = ({
     const [byProductOptions, setByProductOptions] = useState([]);
     const [paddyOptions, setPaddyOptions] = useState([]);
     const [riceOptions, setRiceOptions] = useState([]);
+    const [batchNoOptions, setBatchNoOptions] = useState([]);
 
     const byProductColumns = [
         { id: "name", name: "By-Product" },
@@ -83,12 +84,14 @@ const MillingProduction = ({
     const [companyId, setCompanyId] = useState("");
     const [loading, setLoading] = useState(false);
 
+    const [shouldSetBatch, setShouldSetBatch] = useState(false);
 
-const totalPaddy = Number(totalPaddyKg) || 0;
-const mainRice = Number(mainRiceKg) || 0;
-const byProductTotal = byProducts.reduce((sum, bp) => sum + (Number(bp.quantityKg) || 0), 0);
-const wastage = Number(wastageKg) || 0;
-const balance = totalPaddy - mainRice - byProductTotal - wastage;
+
+    const totalPaddy = Number(totalPaddyKg) || 0;
+    const mainRice = Number(mainRiceKg) || 0;
+    const byProductTotal = byProducts.reduce((sum, bp) => sum + (Number(bp.quantityKg) || 0), 0);
+    const wastage = Number(wastageKg) || 0;
+    const balance = totalPaddy - mainRice - byProductTotal - wastage;
 
 
 
@@ -149,12 +152,36 @@ const balance = totalPaddy - mainRice - byProductTotal - wastage;
         http_Request(requestBody, successCallback, errorCallback);
     };
 
+    const fetchBatchOptions = (itemId) => {
+        if (!itemId) return;
+        const companyId = JSON.parse(localStorage.getItem("userDetail")).companyId;
+        const batchNoUrl = API_URL.batch.GET_ALL_BATCHES_BY_ITEM_AND_COMPANY
+            .replace("{itemId}", itemId)
+            .replace("{companyId}", companyId);
+
+        http_Request(
+            { url: batchNoUrl, method: "GET" },
+            (response) => {
+                if ((response?.status === 200 || response?.status === 201) && response?.data) {
+                    setBatchNoOptions(response.data.map(b => ({
+                        id: String(b.batchNumber), // Use batchNumber as id (string)
+                        name: b.batchNumber
+                    })));
+                    console.log("batch options", response.data);
+                } else {
+                    setBatchNoOptions([]);
+                }
+            },
+            () => setBatchNoOptions([])
+        );
+    };
+
 
     useEffect(() => {
         if ((isEditMode || isViewMode) && productionInfo) {
             setProductionDate(productionInfo.productionDate || "");
             setPaddyItem(productionInfo.paddyItem || "");
-            setPaddyBatch(productionInfo.paddyBatch || "");
+
             setTotalPaddyKg(productionInfo.totalPaddyKg || "");
             setRiceItem(productionInfo.riceItem || "");
             setMainRiceKg(productionInfo.mainRiceKg || "");
@@ -163,6 +190,11 @@ const balance = totalPaddy - mainRice - byProductTotal - wastage;
             setToLocation(productionInfo.toLocation || "");
             setByProducts(productionInfo.byProducts || []);
             setCompanyId(productionInfo.companyId || companyId);
+            // Fetch batch options for the selected paddy item
+            if (productionInfo.paddyItem) {
+                fetchBatchOptions(productionInfo.paddyItem);
+                setShouldSetBatch(true); // set flag to true
+            }
         } else {
             setProductionDate("");
             setPaddyItem("");
@@ -180,6 +212,15 @@ const balance = totalPaddy - mainRice - byProductTotal - wastage;
         setSnackText("");
         setSnackVariant("success");
     }, [isModal, isEditMode, isViewMode, productionInfo]);
+
+
+    useEffect(() => {
+        if (shouldSetBatch && batchNoOptions.length > 0 && productionInfo.paddyBatch) {
+            console.log("Setting batch:", productionInfo.paddyBatch, "Options:", batchNoOptions);
+            setPaddyBatch(String(productionInfo.paddyBatch));
+            setShouldSetBatch(false);
+        }
+    }, [batchNoOptions, shouldSetBatch, productionInfo.paddyBatch]);
 
     const handleAddByProduct = () => {
         if (!currentByProduct.byProduct || !currentByProduct.quantityKg) {
@@ -282,7 +323,10 @@ const balance = totalPaddy - mainRice - byProductTotal - wastage;
                             select
                             label="Paddy Item"
                             value={paddyItem}
-                            onChange={e => setPaddyItem(e.target.value)}
+                            onChange={e => {
+                                setPaddyItem(e.target.value);
+                                fetchBatchOptions(e.target.value);
+                            }}
                             fullWidth
                             size="small"
                             disabled={isViewMode}
@@ -294,13 +338,18 @@ const balance = totalPaddy - mainRice - byProductTotal - wastage;
                     </Grid>
                     <Grid item xs={12} md={4}>
                         <TextField
-                            label="Paddy Batch"
-                            value={paddyBatch}
+                            select
+                            label="Batch No"
+                            value={String(paddyBatch) || ""}
                             onChange={e => setPaddyBatch(e.target.value)}
                             fullWidth
                             size="small"
-                            disabled={isViewMode}
-                        />
+                            disabled={isViewMode || !paddyItem}
+                        >
+                            {batchNoOptions.map(opt => (
+                                <MenuItem key={opt.id} value={opt.id}>{opt.name}</MenuItem>
+                            ))}
+                        </TextField>
                     </Grid>
                     <Grid item xs={12} md={4}>
                         <TextField
@@ -383,11 +432,11 @@ const balance = totalPaddy - mainRice - byProductTotal - wastage;
                 </Grid>
 
                 <Typography sx={{ mt: 2, mb: 1, fontWeight: 600 }}>By-Products</Typography>
-                                <Box sx={{ mb: 2 }}>
-  <Typography variant="subtitle2" color="red">
-    Remaining Balance: <b>{balance}</b> Kg
-  </Typography>
-</Box>
+                <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle2" color="red">
+                        Remaining Balance: <b>{balance}</b> Kg
+                    </Typography>
+                </Box>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={5}>
                         <TextField

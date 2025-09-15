@@ -181,7 +181,7 @@ export const API_URL = {
 
     }, milling: {
         SAVE_MILLING: itemManagmentBase + "/production/produce",
-        SEARCH_MILLING: itemManagmentBase + "/production/search",
+        SEARCH_MILLING: itemManagmentBase + "/production/milling/search",
         UPDATE_MILLING: itemManagmentBase + "/production/produce/{produceId}",
 
 
