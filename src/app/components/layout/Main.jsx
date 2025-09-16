@@ -36,7 +36,7 @@ import {
   serviceMasterOrgSvg,
   riceMillSvg,
   resourceSchedulingSvg,
-  wheatMillSvg,
+  steamProductionSvg,
   adminButtonSvg,
   moneySvg,
   cashierManagementSvg,
@@ -719,6 +719,28 @@ const Main = (props) => {
   );
 
 
+     const steamPageDrawerBtn = (
+    <Grid
+      container
+      style={{ marginTop: "1rem" }}
+      onClick={() => sideTabClick("/alt/admin/steaming")}
+    >
+      <DrawerButton
+        id='steamingPageDrawerBtn'
+        classes={classes}
+        open={open}
+        active={active}
+        setActive={setActive}
+        subTitle={"Steaming"}
+        linkPath={!isChangesOccured && "/alt/admin/steaming"}
+        selectButton={"/alt/admin/steaming"}
+        drawerIcon={steamProductionSvg}
+        nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
+      />
+    </Grid>
+  );
+
+
 
   const loggedInUserDetail = localStorage.getItem('userDetail');
   const isUserAdminPerson = useMemo(() => {
@@ -968,11 +990,15 @@ const Main = (props) => {
                   </PermissionChecker>
 
                   <PermissionChecker permission={1001}>
-                    {productionPageDrawerBtn}
+                    {steamPageDrawerBtn}
                   </PermissionChecker>
 
                   <PermissionChecker permission={1001}>
                     {millingPageDrawerBtn}
+                  </PermissionChecker>
+
+                  <PermissionChecker permission={1001}>
+                    {productionPageDrawerBtn}
                   </PermissionChecker>
 
                 </Collapse>

@@ -180,9 +180,9 @@ export const API_URL = {
         GET_BOM_BY_FINISHED_ITEM: itemManagmentBase + "/production/bom/finished/{finishedItemId}",
 
     }, milling: {
-        SAVE_MILLING: itemManagmentBase + "/production/produce",
+        SAVE_MILLING: itemManagmentBase + "/production/milling/produce",
         SEARCH_MILLING: itemManagmentBase + "/production/milling/search",
-        UPDATE_MILLING: itemManagmentBase + "/production/produce/{produceId}",
+        UPDATE_MILLING: itemManagmentBase + "/production/milling/produce/{produceId}",
 
 
     },

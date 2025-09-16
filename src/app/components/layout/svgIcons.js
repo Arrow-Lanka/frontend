@@ -696,3 +696,72 @@ export const salesSvg = (
     <rect x="14" y="17" width="1.5" height="1" rx="0.5" fill="#F7941D"/>
   </svg>
 );
+
+export const steamProductionSvg = (
+  <svg width="32" height="32" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Boiler tank */}
+    <rect
+      x="6"
+      y="12"
+      width="8"
+      height="7"
+      rx="2"
+      stroke="#F7941D"
+      strokeWidth="1"
+      fill="none"
+    />
+    {/* Boiler base */}
+    <rect
+      x="8"
+      y="19"
+      width="4"
+      height="2"
+      rx="1"
+      fill="#F7941D"
+    />
+    {/* Pipe */}
+    <rect
+      x="13"
+      y="14"
+      width="5"
+      height="1.5"
+      rx="0.75"
+      fill="#F7941D"
+    />
+    {/* Steam clouds */}
+    <ellipse
+      cx="19.5"
+      cy="12"
+      rx="2"
+      ry="1.2"
+      stroke="#F7941D"
+      strokeWidth="1"
+      fill="none"
+    />
+    <ellipse
+      cx="21.5"
+      cy="10.5"
+      rx="1.2"
+      ry="0.7"
+      stroke="#F7941D"
+      strokeWidth="1"
+      fill="none"
+    />
+    <ellipse
+      cx="18.5"
+      cy="10"
+      rx="1"
+      ry="0.6"
+      stroke="#F7941D"
+      strokeWidth="1"
+      fill="none"
+    />
+    {/* Steam swirl */}
+    <path
+      d="M20 12 Q21 13, 20.5 14"
+      stroke="#F7941D"
+      strokeWidth="1"
+      fill="none"
+    />
+  </svg>
+);

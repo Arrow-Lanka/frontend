@@ -237,52 +237,53 @@ const MillingProduction = ({
     };
 
     const handleSubmit = () => {
-        if (
-            !productionDate || !paddyItem || !paddyBatch || !totalPaddyKg ||
-            !riceItem || !mainRiceKg || !wastageKg ||
-            !fromLocation || !toLocation || !companyId
-        ) {
-            setSnackVariant("error");
-            setSnackText("Please fill all required fields!");
-            return;
-        }
-        setLoading(true);
-        const payload = {
-            productionDate,
-            paddyItem,
-            paddyBatch,
-            totalPaddyKg: Number(totalPaddyKg),
-            riceItem,
-            mainRiceKg: Number(mainRiceKg),
-            wastageKg: Number(wastageKg),
-            fromLocation,
-            toLocation,
-            byProducts: byProducts.map(bp => ({
-                byProduct: bp.byProduct,
-                quantityKg: Number(bp.quantityKg)
-            })),
-            companyId
-        };
-        http_Request(
-            { url: isEditMode ? API_URL.millingProduction.UPDATE : API_URL.millingProduction.CREATE, method: isEditMode ? "PUT" : "POST", bodyData: payload },
-            (response) => {
-                setLoading(false);
-                if (response.status === 200 || response.status === 201) {
-                    setSnackVariant("success");
-                    setSnackText("Production entry saved successfully!");
-                    setTimeout(() => {
-                        closeAction && closeAction();
-                        setIsRefresh && setIsRefresh(prev => !prev);
-                    }, 1000);
-                }
-            },
-            (error) => {
-                setLoading(false);
-                setSnackVariant("error");
-                setSnackText("Failed to save production entry!");
-            }
-        );
+        const companyId = JSON.parse(localStorage.getItem("userDetail")).companyId;
+    if (
+        !productionDate || !paddyItem || !paddyBatch || !totalPaddyKg ||
+        !riceItem || !mainRiceKg || 
+        !fromLocation || !toLocation 
+    ) {
+        setSnackVariant("error");
+        setSnackText("Please fill all required fields!");
+        return;
+    }
+    setLoading(true);
+    const payload = {
+        productionDate,
+        paddyItem: Number(paddyItem),
+        paddyBatch, // string
+        totalPaddyKg: Number(totalPaddyKg),
+        riceItem: Number(riceItem),
+        mainRiceKg: Number(mainRiceKg),
+        wastageKg: Number(wastageKg),
+        fromLocation: Number(fromLocation),
+        toLocation: Number(toLocation),
+        byProducts: byProducts.map(bp => ({
+            byProduct: Number(bp.byProduct),
+            quantityKg: Number(bp.quantityKg)
+        })),
+        companyId: Number(companyId)
     };
+    http_Request(
+        { url: isEditMode ? API_URL.milling.UPDATE_MILLING : API_URL.milling.SAVE_MILLING, method: isEditMode ? "PUT" : "POST", bodyData: payload },
+        (response) => {
+            setLoading(false);
+            if (response.status === 200 || response.status === 201) {
+                setSnackVariant("success");
+                setSnackText("Milling production entry saved successfully!");
+                setTimeout(() => {
+                    closeAction && closeAction();
+                    setIsRefresh && setIsRefresh(prev => !prev);
+                }, 1000);
+            }
+        },
+        (error) => {
+            setLoading(false);
+            setSnackVariant("error");
+            setSnackText("Failed to save production entry!");
+        }
+    );
+};
 
     return (
         <Dialog
