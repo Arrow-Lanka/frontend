@@ -186,6 +186,13 @@ export const API_URL = {
 
 
     },
+    steam: {
+        SAVE_STEAM: itemManagmentBase + "/production/steam/produce",
+        SEARCH_STEAM: itemManagmentBase + "/production/steam/search",
+        UPDATE_STEAM: itemManagmentBase + "/production/steam/produce/{produceId}",
+
+
+    },
     // Add to API_URLS.js
 salesInvoice: {
   CREATE_SALES_INVOICE: itemManagmentBase + "/sale/sales-invoice",

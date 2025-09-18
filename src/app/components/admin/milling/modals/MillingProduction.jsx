@@ -133,7 +133,7 @@ const MillingProduction = ({
 
                 setByProductOptions(tempByProductOptions);
 
-                let tempPaddyOptions = response?.data?.Paddy?.map((option) => ({
+                let tempPaddyOptions = response?.data?.SteamPaddy?.map((option) => ({
                     id: option?.id,
                     name: option?.name,
                 }));
