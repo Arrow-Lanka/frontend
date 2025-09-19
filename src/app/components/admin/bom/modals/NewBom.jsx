@@ -186,12 +186,12 @@ const NewBOM = ({
                 };
     
                 if (isEditMode) {
-                    payload["bomId"] = grnInfo.bomId;
+                    payload["bomId"] = bomInfo.bomId;
                 }
     
                 http_Request(
                     {
-                        url: isEditMode ? API_URL?.bom?.UPDATE_BOM.replace('{bomId}', grnInfo.bomId) : API_URL?.bom?.CREATE_BOM,
+                        url: isEditMode ? API_URL?.bom?.UPDATE_BOM.replace('{bomId}', bomInfo.bomId) : API_URL?.bom?.CREATE_BOM,
                         method: isEditMode ? "PUT" : "POST",
                         bodyData: payload,
                     },
