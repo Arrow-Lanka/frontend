@@ -765,3 +765,14 @@ export const steamProductionSvg = (
     />
   </svg>
 );
+
+export const productionMappingSvg = ( <svg width="25" height="25" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+     {/* Document outline */}
+     <rect x="4" y="2" width="16" height="26" rx="2" stroke="#F7941D" strokeWidth="1" fill="none"/> {/* Folded corner */} <polyline points="16,2 20,2 20,6" fill="none" stroke="#F7941D" strokeWidth="1"/> 
+     {/* Factory (production) */}
+     <rect x="6" y="8" width="6" height="6" fill="none" stroke="#F7941D" strokeWidth="1"/> <polyline points="6,8 7,6 8,8 9,6 12,8" fill="none" stroke="#F7941D" strokeWidth="1" strokeLinejoin="round"/> <rect x="11.2" y="5" width="1.5" height="5" fill="none" stroke="#F7941D" strokeWidth="1"/>
+     {/* Gear / hub */}
+     <circle cx="17" cy="12" r="3" fill="none" stroke="#F7941D" strokeWidth="1" strokeDasharray="1.5 1.5"/> <circle cx="17" cy="12" r="1.2" fill="#F7941D"/>
+     {/* Mapping connections */}
+     <polyline points="17,14.5 20,18 14,20" fill="none" stroke="#F7941D" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/> <circle cx="20" cy="18" r="1.2" fill="#F7941D"/>
+ <circle cx="14" cy="20" r="1.2" fill="#F7941D"/> </svg> );

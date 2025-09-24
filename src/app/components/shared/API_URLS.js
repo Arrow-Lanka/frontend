@@ -193,6 +193,14 @@ export const API_URL = {
 
 
     },
+    
+    mapping: {
+        SAVE_MAPPING: itemManagmentBase + "/production/map",
+        SEARCH_MAPPING: itemManagmentBase + "/production/map/search",
+        UPDATE_MAPPING: itemManagmentBase + "/production/map/{productionMappingId}",
+
+
+    },
     // Add to API_URLS.js
 salesInvoice: {
   CREATE_SALES_INVOICE: itemManagmentBase + "/sale/sales-invoice",

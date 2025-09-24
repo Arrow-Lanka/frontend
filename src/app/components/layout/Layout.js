@@ -25,6 +25,8 @@ import Production from '../admin/production/ProductionView.jsx';
 import SalesInvoice from '../admin/sales/SalesInvoice.jsx';
 import Milling from '../admin/milling/MillingProductionView.jsx';
 import Steam from '../admin/steam/SteamProductionView.jsx';
+import ProductionMapping from '../admin/productionMapping/ProductionMapping.jsx';
+
 
 const Layout = (props) => {
     const [isLoggedIn, setIsLoggedIn] = React.useState(true);
@@ -156,6 +158,15 @@ const Layout = (props) => {
                         element={
                             <PermissionChecker permission={1001}>
                                 <Steam />
+                            </PermissionChecker>
+                        }
+                    />
+
+                       <Route
+                        path="admin/mapping"
+                        element={
+                            <PermissionChecker permission={1001}>
+                                <ProductionMapping />
                             </PermissionChecker>
                         }
                     />

@@ -47,7 +47,7 @@ import {
   stockManagementSvg,
   bomSvg,
   productionSvg,
-  configureOrg
+  productionMappingSvg
 } from "./svgIcons";
 
 import maleAvatar from "../../../assets/image/genderAvatar/male-avatar-bg-less.svg";
@@ -740,6 +740,27 @@ const Main = (props) => {
     </Grid>
   );
 
+       const productionMappingPageDrawerBtn = (
+    <Grid
+      container
+      style={{ marginTop: "1rem" }}
+      onClick={() => sideTabClick("/alt/admin/mapping")}
+    >
+      <DrawerButton
+        id='productionMappingPageDrawerBtn'
+        classes={classes}
+        open={open}
+        active={active}
+        setActive={setActive}
+        subTitle={"Production Mapping"}
+        linkPath={!isChangesOccured && "/alt/admin/mapping"}
+        selectButton={"/alt/admin/mapping"}
+        drawerIcon={productionMappingSvg}
+        nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
+      />
+    </Grid>
+  );
+
 
 
   const loggedInUserDetail = localStorage.getItem('userDetail');
@@ -987,6 +1008,10 @@ const Main = (props) => {
 
                   <PermissionChecker permission={1001}>
                     {bomPageDrawerBtn}
+                  </PermissionChecker>
+
+                   <PermissionChecker permission={1001}>
+                    {productionMappingPageDrawerBtn}
                   </PermissionChecker>
 
                   <PermissionChecker permission={1001}>
