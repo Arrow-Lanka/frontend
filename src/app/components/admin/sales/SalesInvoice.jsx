@@ -62,6 +62,35 @@ const SalesInvoice = () => {
         { id: "invoiceNumber", name: "Invoice Number" },
         { id: "customerName", name: "Customer" },
         { id: "totalAmount", name: "Total Amount" },
+        { id: "paidAmount", name: "Paid Amount" },
+        { id: "balanceAmount", name: "Balance" }, 
+        {
+            id: "paymentStatus",
+            name: "Payment Status",
+            template:{
+                type: "twoLineTextFields",
+                fieldList: [{
+                    id: "paymentStatus",
+                    options: [
+                        {
+                            id: "paymentStatus",
+                            value: "PAID",
+                            conditionClass: commonClasses.greenChip 
+                        },
+                        {
+                            id: "paymentStatus",
+                            value: "PARTIALLY_PAID",
+                            conditionClass: commonClasses.orangeChip 
+                        },
+                        {
+                            id: "paymentStatus",
+                            value: "UNPAID",
+                            conditionClass: commonClasses.darkRedChip 
+                        }
+                    ]
+                }]
+            }
+        },
         {
             id: "action",
             name: "Action",

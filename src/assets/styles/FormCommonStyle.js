@@ -67,6 +67,17 @@ export const FormCommonStyles = makeStyles((theme) => ({
         width:"max-content",
         fontWeight:"500"
     },
+    orangeChip: {
+        padding: "4px 15px 2px",
+        fontSize: 13,
+        color: theme.palette.orange.dark,
+        lineHeight: 1.5,
+        backgroundColor: "rgba(255, 171, 3, 0.15)",
+        borderRadius: 16,
+        whiteSpace: "nowrap",
+        width:"max-content",
+        fontWeight:"500"
+    },
     pointerClass: {
         cursor: "pointer"
     },

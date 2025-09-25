@@ -37,6 +37,7 @@ const NewAndEditSalesInvoice = ({
     const [selectedCustomer, setSelectedCustomer] = useState("");
     const [companyId, setCompanyId] = useState("");
     const [items, setItems] = useState([]);
+    const [paidAmount, setPaidAmount] = useState("");
     const [customers, setCustomers] = useState([]);
     const [companies, setCompanies] = useState([]);
     const [stockLocations, setStockLocations] = useState([]);
@@ -115,12 +116,14 @@ const NewAndEditSalesInvoice = ({
             setCompanyId(invoiceInfo.companyId || "");
             setItems(Array.isArray(invoiceInfo.itemList) ? invoiceInfo.itemList.filter(item => item && typeof item === "object" && Object.keys(item).length > 0) : []);
             setInvoiceNumber(invoiceInfo.invoiceNumber || "");
+            setPaidAmount(invoiceInfo.paidAmount != null ? String(invoiceInfo.paidAmount) : "");
         } else {
             setInvoiceDate(new Date().toISOString().slice(0, 10));
             setSelectedCustomer("");
             setCompanyId("");
             setItems([]);
             fetchInvoiceNumber();
+            setPaidAmount("");
         }
         setSnackText("");
         setSnackVariant("success");
@@ -194,11 +197,22 @@ const NewAndEditSalesInvoice = ({
             setSnackText("All fields are required!");
             return;
         }
+
+         if (Number(paidAmount) < 0) {
+            setSnackVariant("error");
+           setSnackText("Paid amount cannot be negative!");
+           return;
+        }
+        if (Number(paidAmount) > totalAmount) {
+            setSnackVariant("error");
+            setSnackText("Paid amount cannot exceed total amount!");
+           return;
+        }
         setLoading(true);
         const companyId = JSON.parse(localStorage.getItem("userDetail")).companyId;
 
         // Calculate totalAmount
-        const totalAmount = items.reduce((sum, item) => sum + (Number(item.lineTotal) || 0), 0);
+      //  const totalAmount = items.reduce((sum, item) => sum + (Number(item.lineTotal) || 0), 0);
         const selectedCustomerObj = customers.find(c => c.personId === selectedCustomer);
 
         const payload = {
@@ -206,6 +220,8 @@ const NewAndEditSalesInvoice = ({
             customerName: selectedCustomerObj ? selectedCustomerObj.fullName : "", // not required, but keep if your API expects it
             customerId: selectedCustomer,
             totalAmount,
+             paidAmount: Number(paidAmount) || 0,
+            balance: totalAmount - (Number(paidAmount) || 0),
             companyId,
             invoiceDate,
             itemList: items.map(({ itemId, batchNo, stockLocationId, quantity, unitPrice, lineTotal }) => ({
@@ -283,6 +299,11 @@ const NewAndEditSalesInvoice = ({
             rowIndex: idx // for remove action
         }))
         : [];
+
+         // derived totals
+    const totalAmount = items.reduce((sum, item) => sum + (Number(item.lineTotal) || 0), 0);
+    const paid = Number(paidAmount) || 0;
+    const balance = totalAmount - paid;
 
     return (
         <Dialog
@@ -446,6 +467,39 @@ const NewAndEditSalesInvoice = ({
                     isPagination={false}
 
                 />
+                                {/* Payment summary */}
+                <Grid container spacing={2} sx={{ mt: 2 }} alignItems="center">
+                    <Grid item xs={12} md={4}>
+                        <TextField
+                            label="Total Amount"
+                            value={totalAmount.toFixed(2)}
+                            fullWidth
+                            size="small"
+                            disabled
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <TextField
+                            label="Paid Amount"
+                            type="number"
+                            value={paidAmount}
+                            onChange={e => setPaidAmount(e.target.value)}
+                            fullWidth
+                            size="small"
+                            disabled={isViewMode}
+                            inputProps={{ min: 0, max: totalAmount }}
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <TextField
+                            label="Balance"
+                            value={balance.toFixed(2)}
+                            fullWidth
+                            size="small"
+                            disabled
+                       />
+                   </Grid>
+                </Grid>
             </DialogContent>
             <DialogActions>
                 <Button onClick={closeAction} color="secondary" variant="outlined">
