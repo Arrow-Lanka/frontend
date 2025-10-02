@@ -10,8 +10,10 @@ import {
     Typography,
     MenuItem,
     Autocomplete,
+    IconButton,
 } from "@mui/material";
 import CancelIcon from '@mui/icons-material/Cancel';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Snackbar from "../../../common/Snackbar";
 import { API_URL } from "../../../shared/API_URLS";
 import { http_Request } from "../../../shared/HTTP_Request";
@@ -38,6 +40,12 @@ const NewAndEditSalesInvoice = ({
     const [companyId, setCompanyId] = useState("");
     const [items, setItems] = useState([]);
     const [paidAmount, setPaidAmount] = useState("");
+    // payments support
+     const [payments, setPayments] = useState([]); // { paymentId?, paymentDate, amount, note }
+    const [newPaymentAmount, setNewPaymentAmount] = useState("");
+    const [newPaymentDate, setNewPaymentDate] = useState(new Date().toISOString().slice(0, 10));
+    const [newPaymentNote, setNewPaymentNote] = useState("");
+
     const [customers, setCustomers] = useState([]);
     const [companies, setCompanies] = useState([]);
     const [stockLocations, setStockLocations] = useState([]);
@@ -69,9 +77,10 @@ const NewAndEditSalesInvoice = ({
 
     // Fetch dropdown data
     useEffect(() => {
+        const company = JSON.parse(localStorage.getItem("userDetail")).companyId;
         http_Request(
             {
-                url: API_URL.non_staff_registration.GET_CUSTOMER_BY_COMPANY.replace("{companyId}", JSON.parse(localStorage.getItem("userDetail")).companyId),
+                url: API_URL.non_staff_registration.GET_CUSTOMER_BY_COMPANY.replace("{companyId}", company),
                 method: "GET"
             },
             (response) => {
@@ -87,7 +96,7 @@ const NewAndEditSalesInvoice = ({
         );
         http_Request(
             {
-                url: API_URL.item.GET_ALL_ITEM_BY_COMPANY.replace("{companyId}", JSON.parse(localStorage.getItem("userDetail")).companyId),
+                url: API_URL.item.GET_ALL_ITEM_BY_COMPANY.replace("{companyId}", company),
                 method: "GET"
             },
             (response) => {
@@ -98,7 +107,7 @@ const NewAndEditSalesInvoice = ({
         );
         http_Request(
             {
-                url: API_URL.stock_location.GET_ALL_STOCK_LOCATION_BY_COMPANY.replace("{companyId}", JSON.parse(localStorage.getItem("userDetail")).companyId),
+                url: API_URL.stock_location.GET_ALL_STOCK_LOCATION_BY_COMPANY.replace("{companyId}", company),
                 method: "GET"
             },
             (response) => {
@@ -116,7 +125,28 @@ const NewAndEditSalesInvoice = ({
             setCompanyId(invoiceInfo.companyId || "");
             setItems(Array.isArray(invoiceInfo.itemList) ? invoiceInfo.itemList.filter(item => item && typeof item === "object" && Object.keys(item).length > 0) : []);
             setInvoiceNumber(invoiceInfo.invoiceNumber || "");
-            setPaidAmount(invoiceInfo.paidAmount != null ? String(invoiceInfo.paidAmount) : "");
+
+            // load payments if present (supports multiple possible property names)
+            const loadedPayments = Array.isArray(invoiceInfo.payments)
+                ? invoiceInfo.payments
+                : Array.isArray(invoiceInfo.paymentList)
+                    ? invoiceInfo.paymentList
+                    : Array.isArray(invoiceInfo.paymentsList)
+                        ? invoiceInfo.paymentsList
+                        : [];
+
+            // normalize and preserve existing payment id (or paymentId) and set id:null for missing
+       const normalizedPayments = (loadedPayments || []).map(p => ({
+                paymentId: p.paymentId ?? p.id ?? null,
+                amount: Number(p.amount ?? p.paidAmount ?? p.paymentAmount ?? 0),
+                paymentDate: p.paymentDate || p.date || p.paymentDate || p.createdDate || "",
+                note: p.note || p.description || ""
+            }));
+            setPayments(normalizedPayments);
+
+            // prefer explicit invoiceInfo.paidAmount, otherwise sum payments
+            const sumPaid = normalizedPayments.reduce((s, p) => s + (Number(p.amount) || 0), 0);
+            setPaidAmount(invoiceInfo.paidAmount != null ? String(invoiceInfo.paidAmount) : (sumPaid ? String(sumPaid) : ""));
         } else {
             setInvoiceDate(new Date().toISOString().slice(0, 10));
             setSelectedCustomer("");
@@ -124,6 +154,10 @@ const NewAndEditSalesInvoice = ({
             setItems([]);
             fetchInvoiceNumber();
             setPaidAmount("");
+            setPayments([]);
+            setNewPaymentAmount("");
+            setNewPaymentDate(new Date().toISOString().slice(0, 10));
+            setNewPaymentNote("");
         }
         setSnackText("");
         setSnackVariant("success");
@@ -131,10 +165,10 @@ const NewAndEditSalesInvoice = ({
 
     const fetchBatchOptions = (itemId) => {
         if (!itemId) return;
-        const companyId = JSON.parse(localStorage.getItem("userDetail")).companyId;
+        const company = JSON.parse(localStorage.getItem("userDetail")).companyId;
         const batchNoUrl = API_URL.batch.GET_ALL_BATCHES_BY_ITEM_AND_COMPANY
             .replace("{itemId}", itemId)
-            .replace("{companyId}", companyId);
+            .replace("{companyId}", company);
 
         http_Request(
             { url: batchNoUrl, method: "GET" },
@@ -191,6 +225,48 @@ const NewAndEditSalesInvoice = ({
         setItems(items.filter((_, idx) => idx !== rowIndex));
     };
 
+    // derived totals
+    const totalAmount = items.reduce((sum, item) => sum + (Number(item.lineTotal) || 0), 0);
+    const paid = Number(paidAmount) || 0;
+    const balance = totalAmount - paid;
+
+
+     
+    // payments functions
+    const addPayment = () => {
+        const amt = Number(newPaymentAmount) || 0;
+        if (amt <= 0) {
+            setSnackVariant("error");
+            setSnackText("Payment amount must be greater than zero.");
+            return;
+        }
+        if (amt > balance) {
+            setSnackVariant("error");
+            setSnackText("Payment cannot exceed remaining balance.");
+            return;
+        }
+        // new payments get id: null
+        const payment = { paymentId: null, amount: amt, paymentDate: newPaymentDate, note: newPaymentNote };
+        const updated = [...payments, payment];
+        setPayments(updated);
+        setPaidAmount(String((Number(paidAmount) || 0) + amt));
+        setNewPaymentAmount("");
+        setNewPaymentDate(new Date().toISOString().slice(0, 10));
+        setNewPaymentNote("");
+        setSnackVariant("success");
+        setSnackText("Payment added.");
+    };
+
+    const removePaymentAt = (idx) => {
+        const p = payments[idx];
+        if (!p) return;
+        const updated = payments.filter((_, i) => i !== idx);
+        setPayments(updated);
+        setPaidAmount(String(Math.max(0, (Number(paidAmount) || 0) - Number(p.amount || 0))));
+        setSnackVariant("success");
+        setSnackText("Payment removed.");
+    };
+
     const handleSubmit = () => {
         if (!invoiceDate || !items.length) {
             setSnackVariant("error");
@@ -198,31 +274,36 @@ const NewAndEditSalesInvoice = ({
             return;
         }
 
-         if (Number(paidAmount) < 0) {
+        if (Number(paidAmount) < 0) {
             setSnackVariant("error");
-           setSnackText("Paid amount cannot be negative!");
-           return;
+            setSnackText("Paid amount cannot be negative!");
+            return;
         }
         if (Number(paidAmount) > totalAmount) {
             setSnackVariant("error");
             setSnackText("Paid amount cannot exceed total amount!");
-           return;
+            return;
         }
         setLoading(true);
-        const companyId = JSON.parse(localStorage.getItem("userDetail")).companyId;
+        const company = JSON.parse(localStorage.getItem("userDetail")).companyId;
 
-        // Calculate totalAmount
-      //  const totalAmount = items.reduce((sum, item) => sum + (Number(item.lineTotal) || 0), 0);
         const selectedCustomerObj = customers.find(c => c.personId === selectedCustomer);
 
         const payload = {
-            invoiceNumber: invoiceNumber || "", // or generate a new one if needed
-            customerName: selectedCustomerObj ? selectedCustomerObj.fullName : "", // not required, but keep if your API expects it
+            invoiceNumber: invoiceNumber || "",
+            customerName: selectedCustomerObj ? selectedCustomerObj.fullName : "",
             customerId: selectedCustomer,
             totalAmount,
-             paidAmount: Number(paidAmount) || 0,
+            paidAmount: Number(paidAmount) || 0,
+            // include id for existing payments; new payments have id: null
+           payments: payments.map(p => ({
+               paymentId: p.paymentId ?? null,
+                paymentDate: p.paymentDate || p.date || null, // LocalDate-like string yyyy-mm-dd
+               amount: Number(p.amount) || 0,
+                note: p.note || ""
+           })),
             balance: totalAmount - (Number(paidAmount) || 0),
-            companyId,
+            companyId: company,
             invoiceDate,
             itemList: items.map(({ itemId, batchNo, stockLocationId, quantity, unitPrice, lineTotal }) => ({
                 itemId,
@@ -272,7 +353,6 @@ const NewAndEditSalesInvoice = ({
                 type: "clickableIconBlock",
                 columnAlign: "right",
                 iconClickAction: (event, row) => {
-
                     if (!row) return;
                     const idx = items.findIndex(i => i.itemId === row.itemId && i.stockLocationId === row.stockLocationId);
                     if (idx !== -1) handleRemoveItem(idx);
@@ -299,11 +379,6 @@ const NewAndEditSalesInvoice = ({
             rowIndex: idx // for remove action
         }))
         : [];
-
-         // derived totals
-    const totalAmount = items.reduce((sum, item) => sum + (Number(item.lineTotal) || 0), 0);
-    const paid = Number(paidAmount) || 0;
-    const balance = totalAmount - paid;
 
     return (
         <Dialog
@@ -353,7 +428,7 @@ const NewAndEditSalesInvoice = ({
                                     size="small"
                                 />
                             )}
-                            isOptionEqualToValue={(option, value) => option.personId === value.personId}
+                            isOptionEqualToValue={(option, value) => option.personId === value?.personId}
                             disabled={isViewMode}
                         />
                     </Grid>
@@ -370,6 +445,7 @@ const NewAndEditSalesInvoice = ({
                         </Grid>
                     </Grid>
                 </Grid>
+
                 <Typography sx={{ mt: 2, mb: 1, fontWeight: 600 }}>Add Item</Typography>
                 <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
                     <Grid item xs={2}>
@@ -379,7 +455,7 @@ const NewAndEditSalesInvoice = ({
                             value={currentItem.itemId ? allItems.find(i => i.itemId === currentItem.itemId) : null}
                             onChange={(_, newValue) => handleCurrentItemChange("itemId", newValue ? newValue.itemId : "")}
                             renderInput={params => <TextField {...params} label="Item" size="small" />}
-                            isOptionEqualToValue={(option, value) => option.itemId === value.itemId}
+                            isOptionEqualToValue={(option, value) => option.itemId === value?.itemId}
                             disabled={isViewMode}
                         />
                     </Grid>
@@ -459,15 +535,16 @@ const NewAndEditSalesInvoice = ({
                         </Button>
                     </Grid>
                 </Grid>
+
                 <Typography sx={{ mt: 2, mb: 1, fontWeight: 600 }}>Items</Typography>
                 <TableComponent
                     classes={classes}
                     columns={itemColumnData}
                     rows={itemRows}
                     isPagination={false}
-
                 />
-                                {/* Payment summary */}
+
+                {/* Payment summary */}
                 <Grid container spacing={2} sx={{ mt: 2 }} alignItems="center">
                     <Grid item xs={12} md={4}>
                         <TextField
@@ -486,7 +563,8 @@ const NewAndEditSalesInvoice = ({
                             onChange={e => setPaidAmount(e.target.value)}
                             fullWidth
                             size="small"
-                            disabled={isViewMode}
+                            // editable when creating only; in edit mode payments control paidAmount
+                            disabled={isViewMode || isEditMode}
                             inputProps={{ min: 0, max: totalAmount }}
                         />
                     </Grid>
@@ -497,8 +575,87 @@ const NewAndEditSalesInvoice = ({
                             fullWidth
                             size="small"
                             disabled
-                       />
-                   </Grid>
+                        />
+                    </Grid>
+
+                    {/* Payments list */}
+                    <Grid item xs={12} sx={{ mt: 1 }}>
+                        <Typography sx={{ fontWeight: 600 }}>Payments</Typography>
+                    </Grid>
+
+                    {payments.length > 0 ? (
+                        <Grid item xs={12}>
+                            <Grid container spacing={1} alignItems="center">
+                                <Grid item xs={3}><Typography sx={{ fontWeight: 600 }}>Date</Typography></Grid>
+                                <Grid item xs={3}><Typography sx={{ fontWeight: 600 }}>Amount</Typography></Grid>
+                                <Grid item xs={5}><Typography sx={{ fontWeight: 600 }}>Note</Typography></Grid>
+                                <Grid item xs={1}></Grid>
+                            </Grid>
+
+                            {payments.map((p, idx) => (
+                                <Grid container spacing={1} alignItems="center" key={idx} sx={{ mt: 0.5 }}>
+                                    <Grid item xs={3}><TextField size="small" fullWidth value={p.paymentDate || p.date || ""} disabled /></Grid>
+                                   <Grid item xs={3}><TextField size="small" fullWidth value={(Number(p.amount) || 0).toFixed(2)} disabled /></Grid>
+                                   <Grid item xs={5}><TextField size="small" fullWidth value={p.note || ""} disabled /></Grid>
+                                    <Grid item xs={1}>
+                                        {!isViewMode && isEditMode && (
+                                            <IconButton size="small" onClick={() => removePaymentAt(idx)} aria-label="delete-payment">
+                                                <DeleteOutlineIcon fontSize="small" />
+                                            </IconButton>
+                                        )}
+                                    </Grid>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    ) : (
+                        <Grid item xs={12}><Typography color="text.secondary">No payments recorded.</Typography></Grid>
+                    )}
+
+                    {/* Add payment controls - only in edit mode */}
+                    {isEditMode && (
+                        <>
+                            <Grid item xs={12} md={3}>
+                                <TextField
+                                    label="Payment Amount"
+                                    type="number"
+                                    value={newPaymentAmount}
+                                    onChange={e => setNewPaymentAmount(e.target.value)}
+                                    fullWidth
+                                    size="small"
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField
+                                    label="Payment Date"
+                                    type="date"
+                                    value={newPaymentDate}
+                                    onChange={e => setNewPaymentDate(e.target.value)}
+                                    fullWidth
+                                    size="small"
+                                    InputLabelProps={{ shrink: true }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <TextField
+                                    label="Note"
+                                    value={newPaymentNote}
+                                    onChange={e => setNewPaymentNote(e.target.value)}
+                                    fullWidth
+                                    size="small"
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={2}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={addPayment}
+                                    disabled={Number(newPaymentAmount) <= 0 || Number(newPaymentAmount) > balance}
+                                >
+                                    Add Payment
+                                </Button>
+                            </Grid>
+                        </>
+                    )}
                 </Grid>
             </DialogContent>
             <DialogActions>

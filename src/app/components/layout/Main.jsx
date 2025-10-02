@@ -47,7 +47,8 @@ import {
   stockManagementSvg,
   bomSvg,
   productionSvg,
-  productionMappingSvg
+  productionMappingSvg,
+  customerOutstandingSvg
 } from "./svgIcons";
 
 import maleAvatar from "../../../assets/image/genderAvatar/male-avatar-bg-less.svg";
@@ -525,6 +526,28 @@ const Main = (props) => {
     </Grid>
   );
 
+    const customerOutstandingPageDrawerBtn = (
+    <Grid
+      container
+      style={{ marginTop: "1rem" }}
+      onClick={() => sideTabClick("/alt/admin/customer-outstanding")}
+    >
+      <DrawerButton
+        id='customerOutstandingPageDrawerBtn'
+        classes={classes}
+        open={open}
+        active={active}
+        setActive={setActive}
+        subTitle={"Customer Outstanding"}
+        linkPath={!isChangesOccured && "/alt/admin/customer-outstanding"}
+        selectButton={"/alt/admin/customer-outstanding"}
+        drawerIcon={customerOutstandingSvg}
+        nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
+
+      />
+    </Grid>
+  );
+
 
   const stockLocationDrawerBtn = (
     <Grid
@@ -975,6 +998,12 @@ const Main = (props) => {
                     permission={1001}
                   >
                     {customerPageDrawerBtn}
+                  </PermissionChecker>
+
+                     <PermissionChecker
+                    permission={1001}
+                  >
+                    {customerOutstandingPageDrawerBtn}
                   </PermissionChecker>
 
                   <PermissionChecker

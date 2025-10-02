@@ -26,6 +26,7 @@ import SalesInvoice from '../admin/sales/SalesInvoice.jsx';
 import Milling from '../admin/milling/MillingProductionView.jsx';
 import Steam from '../admin/steam/SteamProductionView.jsx';
 import ProductionMapping from '../admin/productionMapping/ProductionMapping.jsx';
+import CustomerOutstanding from '../admin/outstanding/CustomerOutStanding.jsx';
 
 
 const Layout = (props) => {
@@ -167,6 +168,15 @@ const Layout = (props) => {
                         element={
                             <PermissionChecker permission={1001}>
                                 <ProductionMapping />
+                            </PermissionChecker>
+                        }
+                    />
+
+                        <Route
+                        path="admin/customer-outstanding"
+                        element={
+                            <PermissionChecker permission={1001}>
+                                <CustomerOutstanding />
                             </PermissionChecker>
                         }
                     />

@@ -97,7 +97,7 @@ const SalesInvoice = () => {
             template: {
                 type: "clickableIconBlock",
                 columnAlign: "right",
-                iconClickAction: (event) => SalesInvoiceIconclickAction(event),
+                iconClickAction: (event, row) => SalesInvoiceIconclickAction(event, row),
                 icons: [
                     { id: "view", name: "View", alt: "view", iconLink: viewIcon, iconClass: commonClasses.pointerClass },
                     { id: "edit", name: "Edit", alt: "edit", iconLink: editIcon, iconClass: commonClasses.pointerClass },
@@ -107,24 +107,44 @@ const SalesInvoice = () => {
         }
     ];
 
-    const SalesInvoiceIconclickAction = (event) => {
-        let id = event.target.id.split("_")[1];
-        let type = event.target.id.split("_")[0];
-        let clickeData = invoiceListPaginationData?.listData?.find(
-            (singleInvoice) => singleInvoice?.invoiceId?.toString() === id.toString()
-        );
+ const SalesInvoiceIconclickAction = (event, row) => {
+       // row is provided by TableComponent; fallback to deriving from event id
+        const targetId = event?.target?.id || "";
+        const parts = targetId.split("_");
+        const type = parts[0];
+        const idFromEvent = parts[1];
+        const clickeData = row
+            || invoiceListPaginationData?.listData?.find(
+                (singleInvoice) => singleInvoice?.invoiceId?.toString() === idFromEvent?.toString()
+            );
+
         setClickedInvoice(clickeData || {});
+
+        // Block edit when paymentStatus is PAID
+        const status = (clickeData?.paymentStatus || "").toString().toUpperCase();
+       if (type === "edit") {
+            if (status === "PAID") {
+                setSnackVariant("error");
+                setSnackText("Cannot edit an invoice with status PAID.");
+                return;
+            }
+            setIsNewAndUpdateModal(true);
+            setIsEditMode(true);
+            setIsViewMode(false);
+            return;
+        }
+
         if (type === "view") {
             setIsNewAndUpdateModal(true);
             setIsViewMode(true);
             setIsEditMode(false);
-        } else if (type === "edit") {
-            setIsNewAndUpdateModal(true);
-            setIsEditMode(true);
-            setIsViewMode(false);
-        } else {
+            return;
+        }
+
+        // delete / inactivate
+        if (type === "delete") {
             setChangesConfirmationModal(true);
-            setInactiveInvoiceId(id);
+            setInactiveInvoiceId(clickeData?.invoiceId || idFromEvent);
         }
     };
 

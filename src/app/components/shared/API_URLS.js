@@ -201,6 +201,12 @@ export const API_URL = {
 
 
     },
+
+     outstanding: {
+        
+        SEARCH_OUTSTANDING: itemManagmentBase + "/outstanding/customer/search",
+    
+    },
     // Add to API_URLS.js
 salesInvoice: {
   CREATE_SALES_INVOICE: itemManagmentBase + "/sale/sales-invoice",

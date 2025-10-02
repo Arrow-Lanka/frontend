@@ -776,3 +776,35 @@ export const productionMappingSvg = ( <svg width="25" height="25" viewBox="0 0 2
      {/* Mapping connections */}
      <polyline points="17,14.5 20,18 14,20" fill="none" stroke="#F7941D" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/> <circle cx="20" cy="18" r="1.2" fill="#F7941D"/>
  <circle cx="14" cy="20" r="1.2" fill="#F7941D"/> </svg> );
+
+
+
+export const customerOutstandingSvg = (
+     <svg width="25" height="25" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg"> 
+    
+     <circle cx="7" cy="6.5" r="2.4" fill="#F7941D" /> 
+     <path d="M4 12c0-1.8 3-3.3 5.5-3.3S15 10.2 15 12v1.8H4V12z" fill="#F7941D" />
+     <ellipse cx="18.5" cy="11" rx="3.2" ry="0.9" fill="#F7941D" />
+<circle cx="18.5" cy="12.6" r="3.2" fill="#F7941D" />
+
+{/* dollar sign (white stroke on the coin) */}
+<path
+  d="M18.5 9.8C17.4 9.8 17.4 10.6 18.5 10.6C19.6 10.6 19.6 11.4 18.5 11.4"
+  stroke="#ffffff"
+  strokeWidth="0.9"
+  strokeLinecap="round"
+  strokeLinejoin="round"
+  fill="none"
+/>
+<path
+  d="M18.5 9.1v1M18.5 11.9v1"
+  stroke="#ffffff"
+  strokeWidth="0.9"
+  strokeLinecap="round"
+  strokeLinejoin="round"
+/>
+
+{/* small alert dot to emphasize 'outstanding' */}
+<circle cx="21.2" cy="8.2" r="0.6" fill="#F7941D" />
+<rect x="20.9" y="6.9" width="0.6" height="1.6" rx="0.25" fill="#F7941D" opacity="0.0" />
+</svg>);
