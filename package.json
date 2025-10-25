@@ -12,7 +12,7 @@
     "@mui/joy": "^5.0.0-beta.52",
     "@mui/lab": "^6.0.0-beta.12",
     "@mui/material": "^6.1.4",
-    "@mui/styles": "^6.4.8",
+    "@mui/styles": "^6.5.0",
     "@mui/x-date-pickers": "^7.29.4",
     "autosuggest-highlight": "^3.3.4",
     "axios": "^1.7.7",
@@ -54,7 +54,6 @@
     ]
   },
   "devDependencies": {
-   
     "sass": "^1.89.2",
     "sass-loader": "^13.3.3"
   }

@@ -9,9 +9,6 @@ import PermissionChecker from '../common/PermissionChecker';
 import Main from "./Main";
 import DashboardComponent from '../common/dasboards/DashboardComponent.js';
 import SessionChecker from '../authorization/SessionChecker';
-
-
-
 import Supplier from '../admin/supllier/Supplier.jsx';
 import Customer from '../admin/customer/Customer.jsx';
 import Company from '../admin/company/Company.jsx';
@@ -27,6 +24,7 @@ import Milling from '../admin/milling/MillingProductionView.jsx';
 import Steam from '../admin/steam/SteamProductionView.jsx';
 import ProductionMapping from '../admin/productionMapping/ProductionMapping.jsx';
 import CustomerOutstanding from '../admin/outstanding/CustomerOutStanding.jsx';
+import UserManagement from "../admin/userManagement/UserManagement";
 
 
 const Layout = (props) => {
@@ -53,6 +51,7 @@ const Layout = (props) => {
             <div>
                 <Routes>
                     <Route path="/dashboard" element={<DashboardComponent />} />
+                  
                     <Route
                         path="admin/company"
                         element={
@@ -154,7 +153,7 @@ const Layout = (props) => {
                         }
                     />
 
-                     <Route
+                    <Route
                         path="admin/steaming"
                         element={
                             <PermissionChecker permission={1001}>
@@ -163,7 +162,7 @@ const Layout = (props) => {
                         }
                     />
 
-                       <Route
+                    <Route
                         path="admin/mapping"
                         element={
                             <PermissionChecker permission={1001}>
@@ -172,11 +171,20 @@ const Layout = (props) => {
                         }
                     />
 
-                        <Route
+                    <Route
                         path="admin/customer-outstanding"
                         element={
                             <PermissionChecker permission={1001}>
                                 <CustomerOutstanding />
+                            </PermissionChecker>
+                        }
+                    />
+
+                      <Route
+                        path="admin/userManagement/*"
+                        element={
+                            <PermissionChecker permission={1001}>
+                                <UserManagement />
                             </PermissionChecker>
                         }
                     />

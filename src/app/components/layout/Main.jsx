@@ -48,7 +48,8 @@ import {
   bomSvg,
   productionSvg,
   productionMappingSvg,
-  customerOutstandingSvg
+  customerOutstandingSvg,
+  userManSvg
 } from "./svgIcons";
 
 import maleAvatar from "../../../assets/image/genderAvatar/male-avatar-bg-less.svg";
@@ -785,6 +786,27 @@ const Main = (props) => {
   );
 
 
+    const userMangDrawerBtn = (
+    <Grid
+    container
+    style={{ marginTop: "1rem" }}
+    onClick={() => sideTabClick("/alt/admin/userManagement")}
+    >
+      <DrawerButton
+        id='userMangDrawerBtn'
+        classes={classes}
+        open={open}
+        active={active}
+        setActive={setActive}
+        subTitle={getLabel({ module: "layout", label: "user management" })}
+        linkPath={!isChangesOccured && "/alt/admin/userManagement/users"}
+        selectButton={"/alt/admin/userManagement/users"}
+        drawerIcon={userManSvg}
+      />
+    </Grid>
+  );
+
+
 
   const loggedInUserDetail = localStorage.getItem('userDetail');
   const isUserAdminPerson = useMemo(() => {
@@ -977,10 +999,20 @@ const Main = (props) => {
               {dashboardDrawerBtn}
               <PermissionChecker
                 permission={1000}
+              >{/* User Management Module  */}
+              <PermissionChecker
+                permission={ 1001 }
               >
+                  { userMangDrawerBtn }
+              </PermissionChecker>
+
+
+
                 {adminPageDrawerMenuBtn}
                 <Collapse in={adminDrawerStates?.isAdminDrawerOpen} timeout={"auto"} unmountOnExit>
 
+
+     
 
                   <PermissionChecker
                     permission={1001}

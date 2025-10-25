@@ -1,5 +1,5 @@
 
-const ipAddress = "http://localhost:9090"
+const ipAddress = "http://16.171.6.50:9090"
 
 
 const imageBase =  "http://localhost:8000";
