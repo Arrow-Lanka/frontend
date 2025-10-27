@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "/static/css/main.e9736165.css",
+    "main.js": "/static/js/main.850bce74.js",
+    "static/media/backgroundImage.png": "/static/media/backgroundImage.e6691b61eb82898f0c35.png",
+    "static/media/loadingsniperNew.gif": "/static/media/loadingsniperNew.dff82359f281d93102c0.gif",
+    "static/media/altLogo-removebg.png": "/static/media/altLogo-removebg.1c942cbb06f0e65cc8d4.png",
+    "static/media/altLogo.png": "/static/media/altLogo.992c2343bbf58da72abf.png",
+    "static/media/male-avatar-bg-less.svg": "/static/media/male-avatar-bg-less.0e97fffd12656b063549559fa56ffe72.svg",
+    "static/media/user_orange.svg": "/static/media/user_orange.770e5e40d0c1c960d537ecced942060d.svg",
+    "static/media/male-avatar-full-opocity.svg": "/static/media/male-avatar-full-opocity.4a910d49abfa6df2a57e54fb77fb18ad.svg",
+    "static/media/move_icon.svg": "/static/media/move_icon.b3dc5de99a919986110e18d7ecf48172.svg",
+    "static/media/female avatar-bg-less.svg": "/static/media/female avatar-bg-less.238166cd7ce9129810b37d4d62c07071.svg",
+    "static/media/ehr-delete.svg": "/static/media/ehr-delete.02408c7bfacd55876829e1e6ba2915f3.svg",
+    "static/media/edit.svg": "/static/media/edit.93411844c6c93ba64597e2a15b4ea605.svg",
+    "static/media/viewAction.svg": "/static/media/viewAction.c2d4683c5b8e301c36ed3f3687e3bfeb.svg",
+    "static/media/file.svg": "/static/media/file.df5a8fc2333a218beeacfb6c23763095.svg",
+    "static/media/question_icon.svg": "/static/media/question_icon.7a48b146f15e271c40d6d1f4a7625d17.svg",
+    "static/media/female-avatar-full-opocity.svg": "/static/media/female-avatar-full-opocity.1f36ae88316bc6a61154dda5db29c709.svg",
+    "static/media/refresh.svg": "/static/media/refresh.851a64c2c7463b8df34d5cd1a8c56901.svg",
+    "index.html": "/index.html",
+    "main.e9736165.css.map": "/static/css/main.e9736165.css.map",
+    "main.850bce74.js.map": "/static/js/main.850bce74.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e9736165.css",
+    "static/js/main.850bce74.js"
+  ]
+}
