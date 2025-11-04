@@ -78,6 +78,18 @@ const ItemForm = (props) => {
 
 
 
+        const fetchItemNumber = () => {
+            http_Request(
+                { url: API_URL.codeSequence.GET_GENERATED_NUMBER.replace("{codeType}", "Item"), method: "GET" },
+                (response) => {
+                    if (response?.status === 200 || response?.status === 201) {
+                        setItemCode(response.data?.name || "");
+                        console.log("Generated Item Code:", response.data?.name);
+                    }
+                }
+            );
+        };
+
 
 
 
@@ -241,6 +253,8 @@ const ItemForm = (props) => {
             setCategory(ItemInfo?.itemCategoryId);
             setInventoryItem(ItemInfo?.inventoryItem ? "true" : "false");
 
+        }else{
+            fetchItemNumber();
         }
     }, []);
 
@@ -344,7 +358,7 @@ const ItemForm = (props) => {
                                 type="text"
                                 name="itemCode"
                                 value={itemCode}
-                                disabled={isSaveAsNew || isViewMode}
+                                disabled
                                 onChange={(e) => {
                                     setItemCode(e.target.value);
                                     handledChangeFieldFun(e, "itemCode");

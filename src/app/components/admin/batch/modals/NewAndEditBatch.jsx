@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogContent,
   Slide,
+  Autocomplete,
   Typography
 } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -18,8 +19,6 @@ import { API_URL } from "../../../shared/API_URLS";
 import { http_Request } from "../../../shared/HTTP_Request";
 import DropDown from "../../../common/DropDown";
 import Snackbar from "../../../common/Snackbar";
-
-
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -38,6 +37,7 @@ const NewAndEditBatch = ({
 
   // Form fields
   const [itemId, setItemId] = useState("");
+  const [selectedItem, setSelectedItem] = useState(null); // <-- added
   const [batchNumber, setBatchNumber] = useState("");
   const [productionDate, setProductionDate] = useState("");
   const [purchaseDate, setPurchaseDate] = useState("");
@@ -61,6 +61,21 @@ const NewAndEditBatch = ({
     setSnackVariant();
   };
 
+  const fetchBatchNumber = (id) => {
+    if (!id) return; // guard to prevent empty calls
+
+    http_Request(
+      { url: API_URL.codeSequence.GET_GENERATED_BATCH_NO.replace("{itemId}", id), method: "GET" },
+      (response) => {
+        console.log("Batch Number Response:", response);
+        if (response?.status === 200 || response?.status === 201) {
+          setBatchNumber(response.data || "");
+        }
+      }
+    );
+  };
+
+
   // Fetch Item options
   const getItemOptionData = () => {
     let itemDataSearchUrl = API_URL.item.GET_ALL_ITEM_BY_COMPANY.replace(
@@ -73,8 +88,9 @@ const NewAndEditBatch = ({
     };
     const successCallback = (response) => {
       if ((response?.status === 200 || response?.status === 201) && response?.data) {
+        // normalize ids to strings to avoid type mismatch
         let tempItemOptions = response?.data?.map((option) => ({
-          id: option?.itemId,
+          id: String(option?.itemId),
           name: option?.itemName,
         }));
         setItemOptions(tempItemOptions);
@@ -114,13 +130,15 @@ const NewAndEditBatch = ({
   // Set form fields if editing or viewing
   useEffect(() => {
     if (isEditMode || isViewMode) {
-      setItemId(BatchInfo?.itemId || "");
+      const id = BatchInfo?.itemId ? String(BatchInfo.itemId) : "";
+      setItemId(id);
       setBatchNumber(BatchInfo?.batchNumber || "");
       setProductionDate(BatchInfo?.productionDate || "");
       setExpiryDate(BatchInfo?.expiryDate || "");
       setPurchaseDate(BatchInfo?.purchaseDate || "");
       setSupplierId(BatchInfo?.supplierId || "");
       setRemarks(BatchInfo?.remarks || "");
+      // selectedItem will be synced once itemOptions load (see next effect)
     } else {
       setItemId("");
       setBatchNumber("");
@@ -129,8 +147,19 @@ const NewAndEditBatch = ({
       setExpiryDate("");
       setSupplierId("");
       setRemarks("");
+      setSelectedItem(null);
     }
   }, [isEditMode, isViewMode, BatchInfo]);
+
+  // Sync selectedItem object when itemOptions or itemId changes
+  useEffect(() => {
+    if (itemOptions && itemOptions.length > 0) {
+      const found = itemOptions.find((o) => String(o.id) === String(itemId));
+      setSelectedItem(found || null);
+    } else {
+      setSelectedItem(null);
+    }
+  }, [itemOptions, itemId]);
 
   // Fetch dropdown data on mount
   useEffect(() => {
@@ -232,25 +261,31 @@ const NewAndEditBatch = ({
           {/* Left Column */}
           <Grid item xs={12} md={6}>
             <Stack spacing={2} sx={{ mt: 2 }}>
-              <DropDown
-                id="itemId"
+              <Autocomplete
                 size="small"
-                variant="outlined"
-                value={itemId}
-                optionData={itemOptions}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setItemId(value);
+                options={itemOptions}
+                getOptionLabel={(option) => option.name || ""}
+                // use the option object as value
+                value={selectedItem}
+                onChange={(event, newValue) => {
+                  setSelectedItem(newValue);
+                  setItemId(newValue ? String(newValue.id) : "");
+                  const id = newValue ? String(newValue.id) : "";
                   setErrorFields({ ...errorFields, itemId: false });
+                  // // optionally fetch batch number when item changes
+                  if (newValue) {
+                    fetchBatchNumber(id);
+                  } else {
+                    setBatchNumber(""); // clear when item is cleared
+                  }
                 }}
-                label={
-                  <span>
-                    Item <span style={{ color: "red" }}>*</span>
-                  </span>
-                }
                 disabled={isViewMode}
-                error={errorFields?.itemId}
+                isOptionEqualToValue={(option, value) => String(option.id) === String(value?.id)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Item" variant="outlined" fullWidth />
+                )}
               />
+
               <TextField
                 size="small"
                 variant="outlined"
@@ -258,7 +293,7 @@ const NewAndEditBatch = ({
                 type="text"
                 name="batchNumber"
                 value={batchNumber}
-                disabled={isViewMode}
+                disabled
                 onChange={(e) => {
                   setBatchNumber(e.target.value);
                   setErrorFields({ ...errorFields, batchNumber: false });
@@ -283,7 +318,6 @@ const NewAndEditBatch = ({
                 label="Purchase Date"
                 InputLabelProps={{ shrink: true }}
               />
-
 
               <TextField
                 size="small"

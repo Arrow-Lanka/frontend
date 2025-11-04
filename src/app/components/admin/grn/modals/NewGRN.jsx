@@ -44,6 +44,17 @@ const NewGRN = (props) => {
         },
     ]);
 
+        const fetchGRNNumber = () => {
+        http_Request(
+            { url: API_URL.codeSequence.GET_GENERATED_NUMBER.replace("{codeType}", "GRN"), method: "GET" },
+            (response) => {
+                if (response?.status === 200 || response?.status === 201) {
+                    setGrnNumber(response.data?.name || "");
+                }
+            }
+        );
+    };
+
     // Error fields
     const [errorFields, setErrorFields] = useState({});
 
@@ -85,7 +96,7 @@ const NewGRN = (props) => {
                 ]
         );
     } else {
-        setGrnNumber("");
+        fetchGRNNumber();
         setGrnDate("");
         setSupplierName("");
         setItems([
@@ -354,7 +365,7 @@ const NewGRN = (props) => {
                                 name="grnNumber"
 
                                 value={grnNumber}
-                                disabled={isViewMode}
+                                disabled
                                 onChange={(e) => {
                                     setGrnNumber(e.target.value);
                                     setErrorFields({ ...errorFields, grnNumber: false });

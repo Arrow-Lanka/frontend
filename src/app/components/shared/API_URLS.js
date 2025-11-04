@@ -216,6 +216,7 @@ salesInvoice: {
 
 codeSequence: {
   GET_GENERATED_NUMBER: itemManagmentBase + "/code_sequence/{codeType}",
+  GET_GENERATED_BATCH_NO: itemManagmentBase + "/code_sequence/generateBatchNo/{itemId}",
   
 },
     
