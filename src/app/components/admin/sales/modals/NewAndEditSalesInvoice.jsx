@@ -22,6 +22,7 @@ import { FormCommonStyles } from "../../../../../assets/styles/FormCommonStyle";
 import classNames from 'classnames';
 import TableComponent from "../../../common/material/TableComponent";
 import deleteIcon from "../../../../../assets/image/icons/ehr-delete.svg";
+import ViewInvoiceModal from "./ViewInvoiceModal";
 
 const NewAndEditSalesInvoice = ({
     isModal = true,
@@ -41,7 +42,7 @@ const NewAndEditSalesInvoice = ({
     const [items, setItems] = useState([]);
     const [paidAmount, setPaidAmount] = useState("");
     // payments support
-     const [payments, setPayments] = useState([]); // { paymentId?, paymentDate, amount, note }
+    const [payments, setPayments] = useState([]); // { paymentId?, paymentDate, amount, note }
     const [newPaymentAmount, setNewPaymentAmount] = useState("");
     const [newPaymentDate, setNewPaymentDate] = useState(new Date().toISOString().slice(0, 10));
     const [newPaymentNote, setNewPaymentNote] = useState("");
@@ -54,6 +55,8 @@ const NewAndEditSalesInvoice = ({
     const [snackVariant, setSnackVariant] = useState("success");
     const [loading, setLoading] = useState(false);
     const [batchNoOptions, setBatchNoOptions] = useState({});
+
+    const [isViewInvoice, setIsViewInvoice] = React.useState(false);
 
     const [currentItem, setCurrentItem] = useState({
         itemId: "",
@@ -136,7 +139,7 @@ const NewAndEditSalesInvoice = ({
                         : [];
 
             // normalize and preserve existing payment id (or paymentId) and set id:null for missing
-       const normalizedPayments = (loadedPayments || []).map(p => ({
+            const normalizedPayments = (loadedPayments || []).map(p => ({
                 paymentId: p.paymentId ?? p.id ?? null,
                 amount: Number(p.amount ?? p.paidAmount ?? p.paymentAmount ?? 0),
                 paymentDate: p.paymentDate || p.date || p.paymentDate || p.createdDate || "",
@@ -231,7 +234,7 @@ const NewAndEditSalesInvoice = ({
     const balance = totalAmount - paid;
 
 
-     
+
     // payments functions
     const addPayment = () => {
         const amt = Number(newPaymentAmount) || 0;
@@ -296,12 +299,12 @@ const NewAndEditSalesInvoice = ({
             totalAmount,
             paidAmount: Number(paidAmount) || 0,
             // include id for existing payments; new payments have id: null
-           payments: payments.map(p => ({
-               paymentId: p.paymentId ?? null,
+            payments: payments.map(p => ({
+                paymentId: p.paymentId ?? null,
                 paymentDate: p.paymentDate || p.date || null, // LocalDate-like string yyyy-mm-dd
-               amount: Number(p.amount) || 0,
+                amount: Number(p.amount) || 0,
                 note: p.note || ""
-           })),
+            })),
             balance: totalAmount - (Number(paidAmount) || 0),
             companyId: company,
             invoiceDate,
@@ -595,8 +598,8 @@ const NewAndEditSalesInvoice = ({
                             {payments.map((p, idx) => (
                                 <Grid container spacing={1} alignItems="center" key={idx} sx={{ mt: 0.5 }}>
                                     <Grid item xs={3}><TextField size="small" fullWidth value={p.paymentDate || p.date || ""} disabled /></Grid>
-                                   <Grid item xs={3}><TextField size="small" fullWidth value={(Number(p.amount) || 0).toFixed(2)} disabled /></Grid>
-                                   <Grid item xs={5}><TextField size="small" fullWidth value={p.note || ""} disabled /></Grid>
+                                    <Grid item xs={3}><TextField size="small" fullWidth value={(Number(p.amount) || 0).toFixed(2)} disabled /></Grid>
+                                    <Grid item xs={5}><TextField size="small" fullWidth value={p.note || ""} disabled /></Grid>
                                     <Grid item xs={1}>
                                         {!isViewMode && isEditMode && (
                                             <IconButton size="small" onClick={() => removePaymentAt(idx)} aria-label="delete-payment">
@@ -662,6 +665,23 @@ const NewAndEditSalesInvoice = ({
                 <Button onClick={closeAction} color="secondary" variant="outlined">
                     {isViewMode ? "Close" : "Cancel"}
                 </Button>
+
+                <Button
+                    onClick={() => setIsViewInvoice(true)}
+                    color="secondary"
+                    variant="outlined"
+                >
+                    Print
+                </Button>
+
+                {isViewInvoice && (
+                    <ViewInvoiceModal
+                        isOpenModal={isViewInvoice}
+                        closeModalAction={() => setIsViewInvoice(false)}
+                        selectedInvoiceId={invoiceNumber}
+                    />
+                )}
+
                 {!isViewMode && (
                     <Button
                         onClick={handleSubmit}

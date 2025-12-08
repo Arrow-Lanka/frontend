@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+    import React, { Component } from 'react';
 import ButtonComponent from '../common/ButtonComponent';
 import { Link } from 'react-router-dom';
 import "../common/commonStyle.css";
@@ -27,7 +27,7 @@ class UserProfilePanel extends Component {
                     }
                     targetElement = targetElement.parentNode;
                 };
-            }
+            }  
             
             if(self.props.isVisible){ 
                 self.props.changeVisibility(false);

@@ -345,11 +345,11 @@ const Main = (props) => {
 
 
 
-    /**
-  |--------------------------------------------------
-  | Sales Drawer State and functions
-  |--------------------------------------------------
-  */
+  /**
+|--------------------------------------------------
+| Sales Drawer State and functions
+|--------------------------------------------------
+*/
   const [salesDrawerStates, dispatchSalesDrawerStates] = React.useReducer((state, action) => {
     switch (action.type) {
       case 'closeSalesDrawer':
@@ -527,7 +527,7 @@ const Main = (props) => {
     </Grid>
   );
 
-    const customerOutstandingPageDrawerBtn = (
+  const customerOutstandingPageDrawerBtn = (
     <Grid
       container
       style={{ marginTop: "1rem" }}
@@ -680,7 +680,7 @@ const Main = (props) => {
   );
 
 
-    const salesPageDrawerBtn = (
+  const salesPageDrawerBtn = (
     <DrawerMenuButton
       id='salesPageDrawerBtn'
       classes={classes}
@@ -698,7 +698,7 @@ const Main = (props) => {
     />
   )
 
-    const salesInvoicePageDrawerBtn = (
+  const salesInvoicePageDrawerBtn = (
     <Grid
       container
       style={{ marginTop: "1rem" }}
@@ -721,7 +721,7 @@ const Main = (props) => {
   );
 
 
-    const millingPageDrawerBtn = (
+  const millingPageDrawerBtn = (
     <Grid
       container
       style={{ marginTop: "1rem" }}
@@ -743,7 +743,7 @@ const Main = (props) => {
   );
 
 
-     const steamPageDrawerBtn = (
+  const steamPageDrawerBtn = (
     <Grid
       container
       style={{ marginTop: "1rem" }}
@@ -764,7 +764,7 @@ const Main = (props) => {
     </Grid>
   );
 
-       const productionMappingPageDrawerBtn = (
+  const productionMappingPageDrawerBtn = (
     <Grid
       container
       style={{ marginTop: "1rem" }}
@@ -786,11 +786,11 @@ const Main = (props) => {
   );
 
 
-    const userMangDrawerBtn = (
+  const userMangDrawerBtn = (
     <Grid
-    container
-    style={{ marginTop: "1rem" }}
-    onClick={() => sideTabClick("/alt/admin/userManagement")}
+      container
+      style={{ marginTop: "1rem" }}
+      onClick={() => sideTabClick("/alt/admin/userManagement")}
     >
       <DrawerButton
         id='userMangDrawerBtn'
@@ -1000,19 +1000,14 @@ const Main = (props) => {
               <PermissionChecker
                 permission={1000}
               >{/* User Management Module  */}
-              <PermissionChecker
-                permission={ 1001 }
-              >
-                  { userMangDrawerBtn }
-              </PermissionChecker>
-
-
+                <PermissionChecker
+                  permission={1001}
+                >
+                  {userMangDrawerBtn}
+                </PermissionChecker>
 
                 {adminPageDrawerMenuBtn}
                 <Collapse in={adminDrawerStates?.isAdminDrawerOpen} timeout={"auto"} unmountOnExit>
-
-
-     
 
                   <PermissionChecker
                     permission={1001}
@@ -1032,7 +1027,7 @@ const Main = (props) => {
                     {customerPageDrawerBtn}
                   </PermissionChecker>
 
-                     <PermissionChecker
+                  <PermissionChecker
                     permission={1001}
                   >
                     {customerOutstandingPageDrawerBtn}
@@ -1054,7 +1049,6 @@ const Main = (props) => {
                     {itemPageDrawerBtn}
                   </PermissionChecker>
 
-
                   <PermissionChecker permission={1001}>
                     {batchPageDrawerBtn}
                   </PermissionChecker>
@@ -1071,7 +1065,7 @@ const Main = (props) => {
                     {bomPageDrawerBtn}
                   </PermissionChecker>
 
-                   <PermissionChecker permission={1001}>
+                  <PermissionChecker permission={1001}>
                     {productionMappingPageDrawerBtn}
                   </PermissionChecker>
 
@@ -1095,11 +1089,11 @@ const Main = (props) => {
                 permission={1000}
               >
                 <Collapse in={salesDrawerStates?.isSalesDrawerOpen} timeout={"auto"} unmountOnExit>
-                                <PermissionChecker permission={1001}>
+                  <PermissionChecker permission={1001}>
                     {salesInvoicePageDrawerBtn}
                   </PermissionChecker>
                 </Collapse>
-                
+
               </PermissionChecker>
 
             </div>

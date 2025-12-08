@@ -1,5 +1,6 @@
 
 const ipAddress = "http://13.50.204.84:9090"
+// const ipAddress = "http://localhost:9090"
 
 
 const imageBase =  "http://localhost:8000";
@@ -212,6 +213,11 @@ salesInvoice: {
   CREATE_SALES_INVOICE: itemManagmentBase + "/sale/sales-invoice",
   UPDATE_SALES_INVOICE: itemManagmentBase + "/sale/sales-invoice/{invoiceId}",
   SEARCH_SALES_INVOICE: itemManagmentBase + "/sale/search",
+},
+
+report: {
+  GET_SALES_INVOICE_JR: itemManagmentBase + "/report/sales_Invoice?fileFormat={fileFormat}&invoiceNo={invoiceNo}",
+
 },
 
 codeSequence: {

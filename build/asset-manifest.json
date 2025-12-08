@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.e9736165.css",
-    "main.js": "/static/js/main.44289a81.js",
+    "main.js": "/static/js/main.547ffa45.js",
     "static/media/backgroundImage.png": "/static/media/backgroundImage.e6691b61eb82898f0c35.png",
     "static/media/loadingsniperNew.gif": "/static/media/loadingsniperNew.dff82359f281d93102c0.gif",
     "static/media/altLogo-removebg.png": "/static/media/altLogo-removebg.1c942cbb06f0e65cc8d4.png",
@@ -18,12 +18,14 @@
     "static/media/question_icon.svg": "/static/media/question_icon.7a48b146f15e271c40d6d1f4a7625d17.svg",
     "static/media/female-avatar-full-opocity.svg": "/static/media/female-avatar-full-opocity.1f36ae88316bc6a61154dda5db29c709.svg",
     "static/media/refresh.svg": "/static/media/refresh.851a64c2c7463b8df34d5cd1a8c56901.svg",
+    "static/media/downloadWhite.svg": "/static/media/downloadWhite.c414f44efd9749ec2882dc8a39595755.svg",
+    "static/media/printerWhite.svg": "/static/media/printerWhite.a7f883f3f5f8c7361b6780e481f6f372.svg",
     "index.html": "/index.html",
     "main.e9736165.css.map": "/static/css/main.e9736165.css.map",
-    "main.44289a81.js.map": "/static/js/main.44289a81.js.map"
+    "main.547ffa45.js.map": "/static/js/main.547ffa45.js.map"
   },
   "entrypoints": [
     "static/css/main.e9736165.css",
-    "static/js/main.44289a81.js"
+    "static/js/main.547ffa45.js"
   ]
 }
