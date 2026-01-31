@@ -132,11 +132,21 @@ const MillingProduction = ({
                 }));
 
                 setByProductOptions(tempByProductOptions);
+//steam Paddy
 
-                let tempPaddyOptions = response?.data?.SteamPaddy?.map((option) => ({
+
+                const steamPaddy = response?.data?.SteamPaddy || [];
+                const paddy = response?.data?.Paddy || [];
+
+                const tempPaddyOptions = [...steamPaddy, ...paddy].map(option => ({
                     id: option?.id,
                     name: option?.name,
                 }));
+
+                // let tempPaddyOptions = response?.data?.SteamPaddy?.map((option) => ({
+                //     id: option?.id,
+                //     name: option?.name,
+                // }));
                 setPaddyOptions(tempPaddyOptions);
 
                 let tempRiceOptions = response?.data?.Rice?.map((option) => ({

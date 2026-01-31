@@ -25,6 +25,7 @@ import Steam from '../admin/steam/SteamProductionView.jsx';
 import ProductionMapping from '../admin/productionMapping/ProductionMapping.jsx';
 import CustomerOutstanding from '../admin/outstanding/CustomerOutStanding.jsx';
 import UserManagement from "../admin/userManagement/UserManagement";
+import ProductionWorkFlow from "../admin/ProductionWorkFlow/ProductionWorkflow.jsx";
 
 
 const Layout = (props) => {
@@ -131,6 +132,15 @@ const Layout = (props) => {
                         element={
                             <PermissionChecker permission={1001}>
                                 <Production />
+                            </PermissionChecker>
+                        }
+                    />
+
+                                        <Route
+                        path="admin/production_work_flow"
+                        element={
+                            <PermissionChecker permission={1001}>
+                                <ProductionWorkFlow />
                             </PermissionChecker>
                         }
                     />

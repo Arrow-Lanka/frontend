@@ -679,6 +679,27 @@ const Main = (props) => {
     </Grid>
   );
 
+  const productionWorkFlowPageDrawerBtn = (
+    <Grid
+      container
+      style={{ marginTop: "1rem" }}
+      onClick={() => sideTabClick("/alt/admin/production_work_flow")}
+    >
+      <DrawerButton
+        id='productionWorkFlowPageDrawerBtn'
+        classes={classes}
+        open={open}
+        active={active}
+        setActive={setActive}
+        subTitle={"Production Work Flow"}
+        linkPath={!isChangesOccured && "/alt/admin/production_work_flow"}
+        selectButton={"/alt/admin/production_work_flow"}
+        drawerIcon={productionSvg} // Use an appropriate icon
+        nestedPadding={"0.5rem 0.5rem 0.5rem 2.25rem"}
+      />
+    </Grid>
+  );
+
 
   const salesPageDrawerBtn = (
     <DrawerMenuButton
@@ -1067,6 +1088,10 @@ const Main = (props) => {
 
                   <PermissionChecker permission={1001}>
                     {productionMappingPageDrawerBtn}
+                  </PermissionChecker>
+
+                  <PermissionChecker permission={1001}>
+                    {productionWorkFlowPageDrawerBtn}
                   </PermissionChecker>
 
                   <PermissionChecker permission={1001}>

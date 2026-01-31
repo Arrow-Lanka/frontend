@@ -37,6 +37,8 @@ const NewGRN = (props) => {
         {
             itemId: "",
             quantity: "",
+            purchasePrice: "",
+            logisticsCost: "",
             itemCost: "",
             unitPrice: "",
             batchNo: "",
@@ -44,7 +46,7 @@ const NewGRN = (props) => {
         },
     ]);
 
-        const fetchGRNNumber = () => {
+    const fetchGRNNumber = () => {
         http_Request(
             { url: API_URL.codeSequence.GET_GENERATED_NUMBER.replace("{codeType}", "GRN"), method: "GET" },
             (response) => {
@@ -67,54 +69,73 @@ const NewGRN = (props) => {
     const [batchNoOptions, setBatchNoOptions] = useState({});
 
     // Reset/initialize state on open or mode change
-   useEffect(() => {
-    if (isEditMode || isViewMode) {
-        setGrnNumber(grnInfo?.grnNumber || "");
-        setGrnDate(grnInfo?.grnDate || "");
-        setSupplierName(grnInfo?.supplierName || "");
-        console.log("grnInfo?.grnItemRequestModelList", grnInfo?.grnItemRequestModelList);
-        setItems(
-            grnInfo?.grnItemRequestModelList?.length
-                ? grnInfo.grnItemRequestModelList.map((item) => ({
-                    grnItemId: item.grnItemId || "",
-                    itemId: item.itemId || "",
-                    quantity: item.quantity || "",
-                    itemCost: item.itemCost || "",
-                    unitPrice: item.unitPrice || "",
-                    batchNo: item.batchNo || "",
-                    stockLocationId: item.stockLocation || "",
-                }))
-                : [
-                    {grnItemId: "",
-                        itemId: "",
-                        quantity: "",
-                        itemCost: "",
-                        unitPrice: "",
-                        batchNo: "",
-                        stockLocationId: "",
-                    },
-                ]
-        );
-    } else {
-        fetchGRNNumber();
-        setGrnDate("");
-        setSupplierName("");
-        setItems([
-            {
-                itemId: "",
-                quantity: "",
-                itemCost: "",
-                unitPrice: "",
-                batchNo: "",
-                stockLocationId: "",
-            },
-        ]);
-    }
-}, [isEditMode, isViewMode, grnInfo, isModal]);
+    useEffect(() => {
+        if (isEditMode || isViewMode) {
+            setGrnNumber(grnInfo?.grnNumber || "");
+            setGrnDate(grnInfo?.grnDate || "");
+            setSupplierName(grnInfo?.supplierName || "");
+            console.log("grnInfo?.grnItemRequestModelList", grnInfo?.grnItemRequestModelList);
+            setItems(
+                grnInfo?.grnItemRequestModelList?.length
+                    ? grnInfo.grnItemRequestModelList.map((item) => ({
+                        grnItemId: item.grnItemId || "",
+                        itemId: item.itemId || "",
+                        quantity: item.quantity || "",
+                        purchasePrice: item.purchasePrice || "",
+                        logisticsCost: item.logisticsCost || "",
+                        itemCost: item.itemCost || "",
+                        unitPrice: item.unitPrice || "",
+                        batchNo: item.batchNo || "",
+                        stockLocationId: item.stockLocation || "",
+                    }))
+                    : [
+                        {
+                            grnItemId: "",
+                            itemId: "",
+                            quantity: "",
+                            purchasePrice: "",
+                            logisticsCost: "",
+                            itemCost: "",
+                            unitPrice: "",
+                            batchNo: "",
+                            stockLocationId: "",
+                        },
+                    ]
+            );
+        } else {
+            fetchGRNNumber();
+            setGrnDate("");
+            setSupplierName("");
+            setItems([
+                {
+                    itemId: "",
+                    quantity: "",
+                    purchasePrice: "",
+                    logisticsCost: "",
+                    itemCost: "",
+                    unitPrice: "",
+                    batchNo: "",
+                    stockLocationId: "",
+                },
+            ]);
+        }
+    }, [isEditMode, isViewMode, grnInfo, isModal]);
 
     const handleItemChange = async (index, field, value) => {
         const updated = [...items];
         updated[index][field] = value;
+
+          // Auto calculate Item Cost
+    const qty = Number(updated[index].quantity);
+    const purchasePrice = Number(updated[index].purchasePrice);
+    const logisticsCost = Number(updated[index].logisticsCost);
+
+    if (qty > 0 && purchasePrice >= 0 && logisticsCost >= 0) {
+        const itemCost =
+            (qty * purchasePrice + logisticsCost) / qty;
+
+        updated[index].itemCost = itemCost.toFixed(2); // optional rounding
+    }
 
         // If itemId changes, fetch batch numbers for that item
         if (field === "itemId" && value) {
@@ -163,6 +184,8 @@ const NewGRN = (props) => {
                     itemId: "",
                     quantity: "",
                     itemCost: "",
+                    purchasePrice: "",
+                    logisticsCost: "",
                     unitPrice: "",
                     batchNo: "",
                     stockLocationId: "",
@@ -181,12 +204,12 @@ const NewGRN = (props) => {
         if (lastItem.itemId &&
             lastItem.quantity &&
             lastItem.stockLocationId) {
-                return true;
+            return true;
         } else {
             setSnackVariant("error");
             setSnackText("Please fill all fields in New Item before saving a GRN.");
         }
-        
+
     };
 
 
@@ -257,7 +280,7 @@ const NewGRN = (props) => {
     };
 
     const handleSave = () => {
-      
+
         let canSave = true;
 
 
@@ -287,9 +310,11 @@ const NewGRN = (props) => {
                 companyId,
 
                 grnItemRequestModelList: items.map(item => ({
-                        grnItemId: Number(item.grnItemId) || undefined,
+                    grnItemId: Number(item.grnItemId) || undefined,
                     itemId: Number(item.itemId),
                     quantity: Number(item.quantity),
+                    purchasePrice: Number(item.purchasePrice),
+                    logisticsCost: Number(item.logisticsCost),
                     unitPrice: Number(item.unitPrice),
                     itemCost: Number(item.itemCost),
                     batchNo: item.batchNo,
@@ -318,9 +343,9 @@ const NewGRN = (props) => {
 
                         setTimeout(() => {
                             closeAction();
-                            
+
                             setIsRefresh(!isRefresh);
-                          
+
                         }, 1000);
                     }
                 },
@@ -343,7 +368,7 @@ const NewGRN = (props) => {
             aria-labelledby="batch-modal-dialog-title"
             aria-describedby="batch-modal-dialog-description"
             scroll="body"
-            maxWidth="lg"
+            maxWidth="xl"
             fullWidth={true}
         >
             <DialogTitle id="batch-modal-dialog-title" className={classes.modelHeader}>
@@ -451,7 +476,7 @@ const NewGRN = (props) => {
                                                 options={batchNoOptions[idx] || []}
                                                 getOptionLabel={(option) => option.name || ""}
                                                 value={
-                                                    (batchNoOptions[idx] || []).find(opt => opt.id === item.batchNo) || 
+                                                    (batchNoOptions[idx] || []).find(opt => opt.id === item.batchNo) ||
                                                     (item.batchNo ? { id: item.batchNo, name: item.batchNo } : null)
                                                 }
                                                 onChange={(_, newValue) => handleItemChange(idx, "batchNo", newValue ? newValue.id : "")}
@@ -473,6 +498,26 @@ const NewGRN = (props) => {
                                         </Grid>
                                         <Grid item xs={2}>
                                             <TextField
+                                                label="Purchasing Price Per 1KG"
+                                                type="number"
+                                                value={item.purchasePrice}
+                                                onChange={(e) => handleItemChange(idx, "purchasePrice", e.target.value)}
+                                                disabled={isViewMode}
+                                                size="small"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={1}>
+                                            <TextField
+                                                label="Logistics Cost"
+                                                type="number"
+                                                value={item.logisticsCost}
+                                                onChange={(e) => handleItemChange(idx, "logisticsCost", e.target.value)}
+                                                disabled={isViewMode}
+                                                size="small"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <TextField
                                                 label="Item Cost"
                                                 type="number"
                                                 value={item.itemCost}
@@ -481,7 +526,7 @@ const NewGRN = (props) => {
                                                 size="small"
                                             />
                                         </Grid>
-                                        <Grid item xs={2}>
+                                        {/* <Grid item xs={2}>
                                             <TextField
                                                 label="Unit Price"
                                                 type="number"
@@ -490,7 +535,7 @@ const NewGRN = (props) => {
                                                 disabled={isViewMode}
                                                 size="small"
                                             />
-                                        </Grid>
+                                        </Grid> */}
 
                                         <Grid item xs={2}>
                                             <DropDown
